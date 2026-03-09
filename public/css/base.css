@@ -85,11 +85,15 @@ label {
     padding: 0;
     width: 30px;
     height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
     line-height: 1;
+    overflow: hidden;
 }
 .icon-btn:hover {
     background: #e0e0e0;
