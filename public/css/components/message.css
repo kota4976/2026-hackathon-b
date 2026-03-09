@@ -1,6 +1,3 @@
-/* ==========================================================================
-   Message Components (Thread Details and Replies)
-   ========================================================================== */
 #thread-detail-container {
     display: flex;
     flex-direction: column;

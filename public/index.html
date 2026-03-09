@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3-Pane Thread App</title>
-    <!-- Google Fonts for modern typography -->
+    <!-- Google Fontsの読み込み -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Modular CSS Components -->
+    <!-- CSSコンポーネントの読み込み -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components/list.css">
@@ -16,10 +16,10 @@
 </head>
 <body>
 
-    <!-- Registration Screen -->
+    <!-- 登録（名前入力）画面 -->
     <div id="registration-screen" class="screen full-center">
         <div class="glass-card">
-            <h1>ようこそ</h1>
+            <h1>アプリ名</h1>
             <p class="subtitle">名前を入力して参加</p>
             <form id="userForm" autocomplete="off">
                 <div class="form-group">
@@ -30,40 +30,40 @@
         </div>
     </div>
 
-    <!-- Main Application Screen -->
+    <!-- メイン画面 -->
     <div id="main-app-screen" class="screen main-layout hidden">
-        <!-- Header -->
+        <!-- ヘッダー -->
         <header class="app-header">
-            <div class="logo">匿名ぼやき掲示板</div>
+            <div class="logo">アプリ名</div>
             <div class="user-profile">
                 <span id="current-username">ユーザー名</span>
                 <button id="logout-btn" class="text-btn">ログアウト</button>
             </div>
         </header>
 
-        <!-- 3-Pane Layout -->
+        <!-- 3ペインレイアウト -->
         <div class="three-pane-container">
             
-            <!-- Left Pane: Categories -->
+            <!-- 左ペイン: カテゴリ -->
             <aside class="pane category-pane">
                 <h2>カテゴリ</h2>
                 <ul id="category-list" class="nav-list">
-                    <!-- Populated by JS -->
+                        <!-- JSで動的に追加される -->
                 </ul>
             </aside>
 
-            <!-- Center Pane: Thread List -->
+            <!-- 中央ペイン: スレッド一覧 -->
             <main class="pane thread-pane">
                 <div class="pane-header">
                     <h2 id="current-category-title">すべてのスレッド</h2>
                     <button id="open-create-thread-btn" class="icon-btn" title="新規作成">+</button>
                 </div>
                 <div id="thread-list" class="content-list">
-                    <!-- Populated by JS -->
+                        <!-- JSで動的に追加される -->
                 </div>
             </main>
 
-            <!-- Right Pane: Thread Details -->
+            <!-- 右ペイン: スレッド詳細 -->
             <section class="pane detail-pane">
                 <div id="thread-detail-container" class="hidden">
                     <div class="pane-header">
@@ -71,7 +71,7 @@
                         <span id="detail-thread-author" class="meta-info">投稿者</span>
                     </div>
                     <div id="reply-list" class="messages-area">
-                        <!-- Populated by JS -->
+                            <!-- JSで動的に追加される -->
                     </div>
                     <div class="reply-input-area">
                         <form id="replyForm" autocomplete="off">
@@ -80,7 +80,7 @@
                         </form>
                     </div>
                 </div>
-                <!-- Empty State -->
+                <!-- 未選択時の表示 -->
                 <div id="empty-state-detail" class="empty-state full-center">
                     <p>スレッドを選択して表示</p>
                 </div>
@@ -88,7 +88,7 @@
         </div>
     </div>
 
-    <!-- Create Thread Modal -->
+    <!-- スレッド作成モーダル -->
     <div id="create-thread-modal" class="modal-overlay hidden">
         <div class="modal-content glass-card">
             <div class="modal-header">
@@ -103,7 +103,7 @@
                 <div class="form-group">
                     <label for="thread-category">カテゴリ</label>
                     <select id="thread-category" required>
-                        <!-- Populated by JS -->
+                            <!-- JSで動的に追加される -->
                     </select>
                 </div>
                 <div class="modal-actions">
@@ -114,7 +114,6 @@
         </div>
     </div>
 
-    <!-- Modular JS Entry Point -->
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
