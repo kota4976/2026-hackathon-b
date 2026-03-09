@@ -1,4 +1,4 @@
-import { store } from '../store.js';
+import * as store from '../store.js';
 import { loadCategories } from './category.js';
 
 export const initModalFeature = () => {
@@ -11,7 +11,7 @@ export const initModalFeature = () => {
 
     const openModal = () => {
         createThreadModal.classList.remove('hidden');
-        // Preset category to current
+        // 現在のカテゴリを選択状態にする
         if (store.currentCategoryId) {
             threadCategorySelect.value = store.currentCategoryId;
         }
@@ -45,7 +45,7 @@ export const initModalFeature = () => {
 
         closeModal();
         
-        // Switch to that category and load by completely refreshing the category list view to trigger the click logic
+        // 対象カテゴリを選択して再読み込み
         const catList = document.querySelectorAll('.category-item');
         let optionToClick = null;
         catList.forEach(item => {
@@ -54,7 +54,7 @@ export const initModalFeature = () => {
         if(optionToClick) {
             optionToClick.click();
         } else {
-             loadCategories(); // Fallback
+             loadCategories(); // フォールバック
         }
     });
 };

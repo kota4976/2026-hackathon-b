@@ -1,4 +1,4 @@
-import { store } from '../store.js';
+import * as store from '../store.js';
 import { loadThreads } from './thread.js';
 
 let threadDetailContainer, emptyStateDetail, detailThreadTitle, detailThreadAuthor, replyList, replyForm, replyContent;
@@ -42,7 +42,7 @@ export const loadReplies = (threadId) => {
         replyList.appendChild(msgDiv);
     });
 
-    // Scroll to bottom
+    // 最下部へスクロール
     replyList.scrollTop = replyList.scrollHeight;
 };
 
@@ -55,7 +55,7 @@ export const initMessageFeature = () => {
     replyForm = document.getElementById('replyForm');
     replyContent = document.getElementById('reply-content');
 
-    // Reply Submit
+    // リプライ送信
     replyForm.addEventListener('submit', (e) => {
         e.preventDefault();
         if (!store.currentThreadId) return;
@@ -67,10 +67,10 @@ export const initMessageFeature = () => {
 
         replyForm.reset();
         
-        // Re-render
+        // 再描画
         loadReplies(store.currentThreadId);
         
-        // Keep selected state
+        // 選択状態を維持
         document.querySelector(`.thread-item[data-id="${store.currentThreadId}"]`)?.classList.add('active');
     });
 };

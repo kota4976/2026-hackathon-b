@@ -1,4 +1,4 @@
-import { store } from '../store.js';
+import * as store from '../store.js';
 import { showThreadDetail } from './message.js';
 
 export const loadThreads = (categoryId) => {
@@ -33,7 +33,7 @@ export const loadThreads = (categoryId) => {
 export const selectThread = (thread) => {
     store.setCurrentThread(thread.id);
     
-    // Highlight active
+    // 選択状態の更新
     document.querySelectorAll('.thread-item').forEach(el => {
         el.classList.toggle('active', el.dataset.id === thread.id);
     });
@@ -41,6 +41,4 @@ export const selectThread = (thread) => {
     showThreadDetail(thread);
 };
 
-export const initThreadFeature = () => {
-    // Initial load will be triggered by category selection
-};
+export const initThreadFeature = () => {};

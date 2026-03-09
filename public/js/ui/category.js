@@ -1,4 +1,4 @@
-import { store } from '../store.js';
+import * as store from '../store.js';
 import { loadThreads } from './thread.js';
 import { clearThreadDetail } from './message.js';
 
@@ -8,10 +8,10 @@ export const loadCategories = () => {
     const currentCategoryTitle = document.getElementById('current-category-title');
 
     categoryList.innerHTML = '';
-    threadCategorySelect.innerHTML = ''; // Populate modal select too
+    threadCategorySelect.innerHTML = ''; // モーダルの選択肢も更新
 
     store.MOCK_CATEGORIES.forEach(cat => {
-        // Sidebar item
+        // サイドバー項目
         const li = document.createElement('li');
         li.className = 'category-item';
         li.textContent = cat.name;
@@ -29,16 +29,15 @@ export const loadCategories = () => {
         });
         categoryList.appendChild(li);
 
-        // Modal option
+        // モーダル選択肢
         const option = document.createElement('option');
         option.value = cat.id;
         option.textContent = cat.name;
         threadCategorySelect.appendChild(option);
     });
 
-    // Auto-select first category if none selected
+    // 初期選択
     if (!store.currentCategoryId && store.MOCK_CATEGORIES.length > 0) {
-        // Trigger click on first
         categoryList.firstChild.click();
     }
 };

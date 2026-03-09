@@ -1,5 +1,5 @@
-import * as store from '../store.js';
-import { initCategoryFeature } from './ui/category.js';
+import * as store from './store.js';
+import { loadCategories } from './ui/category.js';
 import { initThreadFeature } from './ui/thread.js';
 import { initMessageFeature } from './ui/message.js';
 import { initModalFeature } from './ui/modal.js';
@@ -10,17 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainScreen = document.getElementById('main-app-screen');
     const currentUsernameSpan = document.getElementById('current-username');
 
-    // Centralized visibility toggling to be called from auth
+    // 画面切り替え
     window.showMainScreen = () => {
         regScreen.classList.add('hidden');
         mainScreen.classList.remove('hidden');
         currentUsernameSpan.textContent = store.currentUser;
         
-        // Initialize UI components once logged in
-        initCategoryFeature();
+        // UI初期化（イベントリスナーやDOM要素の取得を先に行う）
         initThreadFeature();
         initMessageFeature();
         initModalFeature();
+        
+        // その後、初期データを読み込んで画面に反映（ここでclickイベント等が発火する）
+        loadCategories();
     };
 
     window.showRegistrationScreen = () => {
@@ -28,10 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
         mainScreen.classList.add('hidden');
     };
 
-    // Initialize Auth
+    // 認証初期化
     initAuth();
 
-    // Check initial state
+    // 初期状態の復元
     if (store.currentUser) {
         window.showMainScreen();
     } else {
