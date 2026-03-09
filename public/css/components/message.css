@@ -1,0 +1,68 @@
+/* ==========================================================================
+   Message Components (Thread Details and Replies)
+   ========================================================================== */
+#thread-detail-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.messages-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #fafafa;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 80%;
+}
+
+.message-header {
+    margin-bottom: 2px;
+}
+
+.message-author {
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.message-bubble {
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.message.mine {
+    align-self: flex-end;
+}
+.message.mine .message-header {
+    text-align: right;
+}
+.message.mine .message-bubble {
+    background: #e3f2fd;
+    border-color: #bbdefb;
+}
+
+.reply-input-area {
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    background: #fff;
+}
+
+#replyForm {
+    display: flex;
+    gap: 10px;
+}
+
+#reply-content {
+    flex: 1;
+    margin-bottom: 0;
+}
