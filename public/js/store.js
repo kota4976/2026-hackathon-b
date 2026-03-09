@@ -1,4 +1,4 @@
-// Centralized State and Mock Data
+// 状態とモックデータ
 
 export let currentUser = localStorage.getItem('app_username') || null;
 export let currentCategoryId = null;
@@ -21,28 +21,34 @@ export const setCurrentThread = (id) => {
     currentThreadId = id;
 };
 
-// Mock Data
+// モックデータ
 export const MOCK_CATEGORIES = [
-    { id: 'c1', name: 'Test' },
-    { id: 'c2', name: 'Research' },
-    { id: 'c3', name: 'Work' }
+    { id: 'c1', name: '大学・学校' },
+    { id: 'c2', name: '研究室' },
+    { id: 'c3', name: 'バイト・仕事' }
 ];
 
 export let MOCK_THREADS = [
-    { id: 't1', category_id: 'c1', name: 'Alice', title: 'Is this working?' },
-    { id: 't2', category_id: 'c3', name: 'Bob', title: 'Project Update Q3' },
-    { id: 't3', category_id: 'c2', name: 'Charlie', title: 'React vs Vue discussion' }
+    { id: 't1', category_id: 'c1', name: '田中', title: '必修の単位落とすかもしれん…' },
+    { id: 't2', category_id: 'c3', name: '佐藤', title: '店長がシフト勝手に入れてくる' },
+    { id: 't3', category_id: 'c2', name: '鈴木', title: '教授の無茶振りがエグい' }
 ];
 
 export let MOCK_REPLIES = {
     't1': [
-        { name: 'Alice', content: 'Just testing the new system.' },
-        { name: 'Bob', content: 'Looks good from here!' }
+        { name: '田中', content: 'レポートの締め切り今日だったのマジで知らんかった。' },
+        { name: '山田', content: 'うわ、どんまい。俺も1年ん時やらかしたわ。' },
+        { name: '田中', content: '教授に土下座メール送ってみる…' }
     ],
     't2': [
-        { name: 'Bob', content: 'Here are the latest stats...' },
-        { name: 'Alice', content: 'Thanks.' },
-        { name: 'Charlie', content: 'Can we schedule a sync?' }
+        { name: '佐藤', content: '明日休みなのに勝手に出勤になってる。マジでありえない。' },
+        { name: '高橋', content: '労基案件でしょそれ。辞めた方がいいよ。' },
+        { name: '佐藤', content: '次の給料出たらマジで飛ぶわ。' }
+    ],
+    't3': [
+        { name: '鈴木', content: '明日までに英語の論文10本読んでこいとか正気か？' },
+        { name: '山田', content: '絶対無理やろそれｗ 寝れないじゃん。' },
+        { name: '鈴木', content: 'もう諦めてYouTube見てるわ。おやすみ。' }
     ]
 };
 
