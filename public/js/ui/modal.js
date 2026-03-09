@@ -1,0 +1,60 @@
+import { store } from '../store.js';
+import { loadCategories } from './category.js';
+
+export const initModalFeature = () => {
+    const createThreadBtn = document.getElementById('open-create-thread-btn');
+    const createThreadModal = document.getElementById('create-thread-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const cancelThreadBtn = document.getElementById('cancel-thread-btn');
+    const createThreadForm = document.getElementById('createThreadForm');
+    const threadCategorySelect = document.getElementById('thread-category');
+
+    const openModal = () => {
+        createThreadModal.classList.remove('hidden');
+        // Preset category to current
+        if (store.currentCategoryId) {
+            threadCategorySelect.value = store.currentCategoryId;
+        }
+    };
+
+    const closeModal = () => {
+        createThreadModal.classList.add('hidden');
+        createThreadForm.reset();
+    };
+
+    createThreadBtn.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    cancelThreadBtn.addEventListener('click', closeModal);
+
+    createThreadForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('thread-title').value.trim();
+        const categoryId = document.getElementById('thread-category').value;
+
+        if (!title || !categoryId) return;
+
+        const newThread = {
+            id: 't' + Date.now(),
+            category_id: categoryId,
+            name: store.currentUser,
+            title: title
+        };
+
+        store.addThread(newThread);
+
+        closeModal();
+        
+        // Switch to that category and load by completely refreshing the category list view to trigger the click logic
+        const catList = document.querySelectorAll('.category-item');
+        let optionToClick = null;
+        catList.forEach(item => {
+            if(item.dataset.id === categoryId) optionToClick = item;
+        });
+        if(optionToClick) {
+            optionToClick.click();
+        } else {
+             loadCategories(); // Fallback
+        }
+    });
+};
