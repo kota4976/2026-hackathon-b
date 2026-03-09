@@ -82,10 +82,14 @@ label {
     color: #333;
     border: 1px solid #ddd;
     border-radius: 4px;
-    padding: 5px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.2rem;
+    line-height: 1;
 }
 .icon-btn:hover {
     background: #e0e0e0;
