@@ -19,13 +19,13 @@
     <!-- Registration Screen -->
     <div id="registration-screen" class="screen full-center">
         <div class="glass-card">
-            <h1>Welcome</h1>
-            <p class="subtitle">Enter your name to join</p>
+            <h1>ようこそ</h1>
+            <p class="subtitle">名前を入力して参加</p>
             <form id="userForm" autocomplete="off">
                 <div class="form-group">
-                    <input type="text" id="username" required placeholder="Display Name" autocomplete="off">
+                    <input type="text" id="username" required placeholder="表示名" autocomplete="off">
                 </div>
-                <button type="submit" class="primary-btn">Let's Go</button>
+                <button type="submit" class="primary-btn">はじめる</button>
             </form>
         </div>
     </div>
@@ -34,10 +34,10 @@
     <div id="main-app-screen" class="screen main-layout hidden">
         <!-- Header -->
         <header class="app-header">
-            <div class="logo">ThreadApp</div>
+            <div class="logo">匿名ぼやき掲示板</div>
             <div class="user-profile">
-                <span id="current-username">User Name</span>
-                <button id="logout-btn" class="text-btn">Logout</button>
+                <span id="current-username">ユーザー名</span>
+                <button id="logout-btn" class="text-btn">ログアウト</button>
             </div>
         </header>
 
@@ -46,7 +46,7 @@
             
             <!-- Left Pane: Categories -->
             <aside class="pane category-pane">
-                <h2>Categories</h2>
+                <h2>カテゴリ</h2>
                 <ul id="category-list" class="nav-list">
                     <!-- Populated by JS -->
                 </ul>
@@ -55,7 +55,7 @@
             <!-- Center Pane: Thread List -->
             <main class="pane thread-pane">
                 <div class="pane-header">
-                    <h2 id="current-category-title">All Threads</h2>
+                    <h2 id="current-category-title">すべてのスレッド</h2>
                     <button id="open-create-thread-btn" class="icon-btn" title="Create Thread">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     </button>
@@ -69,15 +69,15 @@
             <section class="pane detail-pane">
                 <div id="thread-detail-container" class="hidden">
                     <div class="pane-header">
-                        <h2 id="detail-thread-title">Thread Title</h2>
-                        <span id="detail-thread-author" class="meta-info">by Author</span>
+                        <h2 id="detail-thread-title">スレッドタイトル</h2>
+                        <span id="detail-thread-author" class="meta-info">投稿者</span>
                     </div>
                     <div id="reply-list" class="messages-area">
                         <!-- Populated by JS -->
                     </div>
                     <div class="reply-input-area">
                         <form id="replyForm" autocomplete="off">
-                            <input type="text" id="reply-content" required placeholder="Type a reply..." autocomplete="off">
+                            <input type="text" id="reply-content" required placeholder="返信を入力..." autocomplete="off">
                             <button type="submit" class="send-btn">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                             </button>
@@ -86,7 +86,7 @@
                 </div>
                 <!-- Empty State -->
                 <div id="empty-state-detail" class="empty-state full-center">
-                    <p>Select a thread to view</p>
+                    <p>スレッドを選択して表示</p>
                 </div>
             </section>
         </div>
@@ -96,25 +96,25 @@
     <div id="create-thread-modal" class="modal-overlay hidden">
         <div class="modal-content glass-card">
             <div class="modal-header">
-                <h3>Create New Thread</h3>
+                <h3>新規スレッド作成</h3>
                 <button id="close-modal-btn" class="icon-btn close-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
             <form id="createThreadForm" autocomplete="off">
                 <div class="form-group">
-                    <label for="thread-title">Title</label>
-                    <input type="text" id="thread-title" required placeholder="What's on your mind?">
+                    <label for="thread-title">タイトル</label>
+                    <input type="text" id="thread-title" required placeholder="愚痴を吐き出す...">
                 </div>
                 <div class="form-group">
-                    <label for="thread-category">Category</label>
+                    <label for="thread-category">カテゴリ</label>
                     <select id="thread-category" required>
                         <!-- Populated by JS -->
                     </select>
                 </div>
                 <div class="modal-actions">
-                    <button type="button" id="cancel-thread-btn" class="text-btn">Cancel</button>
-                    <button type="submit" class="primary-btn">Post Thread</button>
+                    <button type="button" id="cancel-thread-btn" class="text-btn">キャンセル</button>
+                    <button type="submit" class="primary-btn">投稿する</button>
                 </div>
             </form>
         </div>

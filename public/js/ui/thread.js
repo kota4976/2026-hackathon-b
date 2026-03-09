@@ -7,7 +7,7 @@ export const loadThreads = (categoryId) => {
     const filteredThreads = store.MOCK_THREADS.filter(t => t.category_id === categoryId);
 
     if (filteredThreads.length === 0) {
-        threadList.innerHTML = '<div class="empty-state" style="padding: 20px;">No threads yet.</div>';
+        threadList.innerHTML = '<div class="empty-state" style="padding: 20px;">まだスレッドがありません。</div>';
         return;
     }
 

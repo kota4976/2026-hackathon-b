@@ -14,7 +14,7 @@ export const showThreadDetail = (thread) => {
     threadDetailContainer.classList.remove('hidden');
     
     detailThreadTitle.textContent = thread.title;
-    detailThreadAuthor.textContent = `by ${thread.name}`;
+    detailThreadAuthor.textContent = `投稿者: ${thread.name}`;
     
     loadReplies(thread.id);
 };
@@ -24,7 +24,7 @@ export const loadReplies = (threadId) => {
     const replies = store.MOCK_REPLIES[threadId] || [];
 
     if (replies.length === 0) {
-        replyList.innerHTML = '<div class="empty-state" style="margin-top:20px;">No replies yet. Be the first to reply!</div>';
+        replyList.innerHTML = '<div class="empty-state" style="margin-top:20px;">まだ返信がありません。最初の返信をしよう！</div>';
         return;
     }
 
