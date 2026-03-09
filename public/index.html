@@ -3,18 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple User Creation</title>
-    <link rel="stylesheet" href="style.css">
+    <title>3-Pane Thread App</title>
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Modular CSS Components -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components/list.css">
+    <link rel="stylesheet" href="css/components/message.css">
 </head>
 <body>
-    <div class="container">
-        <form id="userForm" autocomplete="off">
-            <div class="form-group">
-                <input type="text" id="username" required placeholder="名前を入力" autocomplete="off">
-            </div>
-            <button type="submit">作成</button>
-        </form>
+
+    <!-- Registration Screen -->
+    <div id="registration-screen" class="screen full-center">
+        <div class="glass-card">
+            <h1>Welcome</h1>
+            <p class="subtitle">Enter your name to join</p>
+            <form id="userForm" autocomplete="off">
+                <div class="form-group">
+                    <input type="text" id="username" required placeholder="Display Name" autocomplete="off">
+                </div>
+                <button type="submit" class="primary-btn">Let's Go</button>
+            </form>
+        </div>
     </div>
-    <script src="register.js"></script>
+
+    <!-- Main Application Screen -->
+    <div id="main-app-screen" class="screen main-layout hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">ThreadApp</div>
+            <div class="user-profile">
+                <span id="current-username">User Name</span>
+                <button id="logout-btn" class="text-btn">Logout</button>
+            </div>
+        </header>
+
+        <!-- 3-Pane Layout -->
+        <div class="three-pane-container">
+            
+            <!-- Left Pane: Categories -->
+            <aside class="pane category-pane">
+                <h2>Categories</h2>
+                <ul id="category-list" class="nav-list">
+                    <!-- Populated by JS -->
+                </ul>
+            </aside>
+
+            <!-- Center Pane: Thread List -->
+            <main class="pane thread-pane">
+                <div class="pane-header">
+                    <h2 id="current-category-title">All Threads</h2>
+                    <button id="open-create-thread-btn" class="icon-btn" title="Create Thread">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                </div>
+                <div id="thread-list" class="content-list">
+                    <!-- Populated by JS -->
+                </div>
+            </main>
+
+            <!-- Right Pane: Thread Details -->
+            <section class="pane detail-pane">
+                <div id="thread-detail-container" class="hidden">
+                    <div class="pane-header">
+                        <h2 id="detail-thread-title">Thread Title</h2>
+                        <span id="detail-thread-author" class="meta-info">by Author</span>
+                    </div>
+                    <div id="reply-list" class="messages-area">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="reply-input-area">
+                        <form id="replyForm" autocomplete="off">
+                            <input type="text" id="reply-content" required placeholder="Type a reply..." autocomplete="off">
+                            <button type="submit" class="send-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Empty State -->
+                <div id="empty-state-detail" class="empty-state full-center">
+                    <p>Select a thread to view</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Create Thread Modal -->
+    <div id="create-thread-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3>Create New Thread</h3>
+                <button id="close-modal-btn" class="icon-btn close-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <form id="createThreadForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="thread-title">Title</label>
+                    <input type="text" id="thread-title" required placeholder="What's on your mind?">
+                </div>
+                <div class="form-group">
+                    <label for="thread-category">Category</label>
+                    <select id="thread-category" required>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancel-thread-btn" class="text-btn">Cancel</button>
+                    <button type="submit" class="primary-btn">Post Thread</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modular JS Entry Point -->
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
