@@ -28,8 +28,13 @@ export const loadReplies = async (threadId) => {
         const threadData = await fetchThreadContents(threadId);
         replies = threadData.reply || [];
     } catch (error) {
-        // Fallback for empty or newly created threads
-        replies = store.MOCK_REPLIES[threadId] || [];
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'empty-state';
+        errorDiv.style.marginTop = '20px';
+        errorDiv.style.color = 'red';
+        errorDiv.textContent = '返信の取得に失敗しました。';
+        replyList.appendChild(errorDiv);
+        return;
     }
 
     if (replies.length === 0) {
