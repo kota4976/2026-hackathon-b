@@ -34,6 +34,14 @@ export const loadThreads = async (categoryId, preserveDetailState = false) => {
       titleDiv.className = "thread-item-title";
       titleDiv.textContent = thread.title;
 
+      // 10を超えたらバッジを表示
+      if (thread.replyCount > 10) {
+        const badgeSpan = document.createElement("span");
+        badgeSpan.className = "hot-badge";
+        badgeSpan.textContent = "🔥";
+        div.appendChild(badgeSpan);
+      }
+
       // メタ情報 (投稿者名など)
       const metaDiv = document.createElement("div");
       metaDiv.className = "thread-item-meta";
