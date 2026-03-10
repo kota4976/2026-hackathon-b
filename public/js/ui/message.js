@@ -1,5 +1,6 @@
 import * as store from '../store.js';
 import { loadThreads } from './thread.js';
+import { fetchThreadContents } from '../api/thread.js';
 
 let threadDetailContainer, emptyStateDetail, detailThreadTitle, detailThreadAuthor, replyList, replyForm, replyContent;
 
@@ -9,19 +10,27 @@ export const clearThreadDetail = () => {
     emptyStateDetail.classList.remove('hidden');
 };
 
-export const showThreadDetail = (thread) => {
+export const showThreadDetail = async (thread) => {
     emptyStateDetail.classList.add('hidden');
     threadDetailContainer.classList.remove('hidden');
     
     detailThreadTitle.textContent = thread.title;
     detailThreadAuthor.textContent = `投稿者: ${thread.name}`;
     
-    loadReplies(thread.threadId);
+    await loadReplies(thread.threadId);
 };
 
-export const loadReplies = (threadId) => {
+export const loadReplies = async (threadId) => {
     replyList.innerHTML = '';
-    const replies = store.MOCK_REPLIES[threadId] || [];
+    
+    let replies = [];
+    try {
+        const threadData = await fetchThreadContents(threadId);
+        replies = threadData.reply || [];
+    } catch (error) {
+        // Fallback for empty or newly created threads
+        replies = store.MOCK_REPLIES[threadId] || [];
+    }
 
     if (replies.length === 0) {
         const emptyDiv = document.createElement('div');
@@ -73,7 +82,7 @@ export const initMessageFeature = () => {
     replyContent = document.getElementById('reply-content');
 
     // リプライ送信
-    replyForm.addEventListener('submit', (e) => {
+    replyForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!store.currentThreadId) return;
 
@@ -85,7 +94,7 @@ export const initMessageFeature = () => {
         replyForm.reset();
         
         // 再描画
-        loadReplies(store.currentThreadId);
+        await loadReplies(store.currentThreadId);
         
         // 選択状態を維持
         document.querySelector(`.thread-item[data-id="${store.currentThreadId}"]`)?.classList.add('active');
