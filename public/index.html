@@ -40,7 +40,7 @@
         </header>
 
         <!-- 3ペインレイアウト -->
-        <div class="three-pane-container">
+        <div id="pane-container" class="three-pane-container">
             
             <!-- 左ペイン: カテゴリ -->
             <aside class="pane category-pane">
@@ -49,6 +49,9 @@
                         <!-- JSで動的に追加される -->
                 </ul>
             </aside>
+
+            <!-- ドラッグ用境界線 -->
+            <div class="resizer" id="resizer-1"></div>
 
             <!-- 中央ペイン: スレッド一覧 -->
             <main class="pane thread-pane">
@@ -60,6 +63,9 @@
                         <!-- JSで動的に追加される -->
                 </div>
             </main>
+
+            <!-- ドラッグ用境界線 -->
+            <div class="resizer" id="resizer-2"></div>
 
             <!-- 右ペイン: スレッド詳細 -->
             <section class="pane detail-pane">
@@ -79,7 +85,7 @@
                     </div>
                 </div>
                 <!-- 未選択時の表示 -->
-                <div id="empty-state-detail" class="empty-state full-center">
+                <div id="empty-state-detail" class="empty-state pane-center">
                     <p>スレッドを選択して表示</p>
                 </div>
             </section>
