@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
   }
 
   if (req.method === "GET" && url.pathname === "/thread/list/") {
-    return new Response(JSON.stringify(threads), {
+    return new Response(JSON.stringify(Object.fromEntries(threads)), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
