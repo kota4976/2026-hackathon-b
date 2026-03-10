@@ -24,3 +24,24 @@ export const fetchThreadContents = async (threadId) => {
         throw error;
     }
 };
+
+export const createThread = async (threadData) => {
+    try {
+        const response = await fetch('/thread', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(threadData),
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error("スレッドの作成に失敗しました:", error);
+        throw error;
+    }
+};
