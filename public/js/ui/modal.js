@@ -1,9 +1,8 @@
 import * as store from '../store.js';
-import { loadCategories } from './category.js';
+import { loadThreads } from './thread.js';
 import { createThread } from '../api/thread.js';
 
 export const initModalFeature = () => {
-    // ... [existing element queries]
     const createThreadBtn = document.getElementById('open-create-thread-btn');
     const createThreadModal = document.getElementById('create-thread-modal');
     const closeModalBtn = document.getElementById('close-modal-btn');
@@ -43,7 +42,10 @@ export const initModalFeature = () => {
 
         try {
             // バックエンドに新規スレッド作成リクエストを送信
-            await createThread(newThreadData);
+            // await createThread(newThreadData);
+            const newThread = await createThread(newThreadData);
+            console.log("投稿が完了しました", newThread);
+            
         } catch (error) {
             alert('スレッドの作成に失敗しました。');
             return;

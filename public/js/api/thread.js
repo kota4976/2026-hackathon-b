@@ -1,11 +1,15 @@
 export const fetchThreads = async (categoryId) => {
     try {
-        const response = await fetch(`/thread/list?categoryId=${categoryId}`);
+        const response = await fetch('/thread/list/');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        return data.threads || [];
+        
+        if (data && data[categoryId]) {
+            return data[categoryId].threads || [];
+        }
+        return [];
     } catch (error) {
         console.error("スレッド一覧の取得に失敗しました:", error);
         throw error;
