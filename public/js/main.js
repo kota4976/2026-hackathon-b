@@ -3,6 +3,7 @@ import { loadCategories } from './ui/category.js';
 import { initThreadFeature } from './ui/thread.js';
 import { initMessageFeature } from './ui/message.js';
 import { initModalFeature } from './ui/modal.js';
+import { initResizer } from './ui/resizer.js';
 import { initAuth } from './auth.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initThreadFeature();
         initMessageFeature();
         initModalFeature();
+        initResizer();
         
         // その後、初期データを読み込んで画面に反映（ここでclickイベント等が発火する）
         loadCategories();
