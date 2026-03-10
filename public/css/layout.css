@@ -45,6 +45,7 @@
     flex-direction: column;
     height: 100%;
     border-right: 1px solid #ddd;
+    overflow: hidden;
 }
 .pane:last-child {
     border-right: none;

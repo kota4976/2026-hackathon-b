@@ -25,6 +25,11 @@
     overflow-y: auto;
 }
 
+.category-pane .nav-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
 .thread-item {
     padding: 12px 15px;
     border-bottom: 1px solid #eee;
