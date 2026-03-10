@@ -1,6 +1,6 @@
 import * as store from '../store.js';
 import { loadThreads } from './thread.js';
-import { fetchThreadContents } from '../api/thread.js';
+import { fetchThreadContents, postReply } from '../api/thread.js';
 
 let threadDetailContainer, emptyStateDetail, detailThreadTitle, detailThreadAuthor, replyList, replyForm, replyContent;
 
@@ -28,7 +28,7 @@ export const loadReplies = async (threadId) => {
     try {
         const threadData = await fetchThreadContents(threadId);
         replies = threadData.reply || [];
-    } catch (error) {
+    } catch (_error) {
         const errorDiv = document.createElement('div');
         errorDiv.className = 'empty-state';
         errorDiv.style.marginTop = '20px';
@@ -99,12 +99,22 @@ export const initMessageFeature = () => {
         const content = replyContent.value.trim();
         if (!content) return;
 
-        store.addReply(store.currentThreadId, store.currentUser, content);
+        try {
+            await postReply(store.currentThreadId, { name: store.currentUser, content });
+        } catch (_error) {
+            alert('リプライの送信に失敗しました。');
+            return;
+        }
 
         replyForm.reset();
         
         // 再描画
         await loadReplies(store.currentThreadId);
+        
+        // 最新のスレッド一覧も再描画してリプライ数を更新
+        if (store.currentCategoryId) {
+            await loadThreads(store.currentCategoryId);
+        }
         
         // 選択状態を維持
         document.querySelector(`.thread-item[data-id="${store.currentThreadId}"]`)?.classList.add('active');

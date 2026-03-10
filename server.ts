@@ -238,6 +238,7 @@ Deno.serve(async (req) => {
 
       // スレッドが見つかった場合は返信を追加
       if (thread) {
+        thread.replyCount++;
         thread.reply.push({ name, content });
         return new Response(
           JSON.stringify({
