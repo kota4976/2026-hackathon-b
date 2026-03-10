@@ -11,3 +11,16 @@ export const fetchThreads = async (categoryId) => {
         throw error;
     }
 };
+
+export const fetchThreadContents = async (threadId) => {
+    try {
+        const response = await fetch(`/thread/contents?threadId=${threadId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("スレッド詳細の取得に失敗しました:", error);
+        throw error;
+    }
+};
