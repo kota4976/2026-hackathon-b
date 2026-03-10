@@ -1,5 +1,4 @@
 import { serveDir } from "@std/http";
-import { appendFile } from "node:fs";
 
 type Category = {
   categoryId: number;
