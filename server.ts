@@ -37,6 +37,27 @@ type Reply = {
   content: string;
 };
 
+const threadList = new Map<number, ThreadList>([
+  [1, {
+    threads: [
+      { threadId: 1, name: "テスト1", title: "テスト1のタイトル" },
+      { threadId: 2, name: "テスト2", title: "テスト2のタイトル" },
+    ],
+  }],
+  [2, {
+    threads: [
+      { threadId: 3, name: "研究1", title: "研究1のタイトル" },
+      { threadId: 4, name: "研究2", title: "研究2のタイトル" },
+    ],
+  }],
+  [3, {
+    threads: [
+      { threadId: 5, name: "仕事1", title: "仕事1のタイトル" },
+      { threadId: 6, name: "仕事2", title: "仕事2のタイトル" },
+    ],
+  }],
+]);
+
 // カテゴリーごとのスレッドを管理するMap
 const threads = new Map<number, Threads>();
 threads.set(1, {
@@ -124,15 +145,15 @@ Deno.serve(async (req) => {
       });
     }
 
-    const threadsInCategory = threads.get(Number(categoryId));
-    if (!threadsInCategory) {
+    const threadListForCategory = threadList.get(Number(categoryId));
+    if (!threadListForCategory) {
       return new Response(JSON.stringify({ error: "Category not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify(threadsInCategory.threads), {
+    return new Response(JSON.stringify(threadListForCategory), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

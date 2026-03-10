@@ -5,7 +5,7 @@ export const fetchThreads = async (categoryId) => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        return data || [];
+        return data.threads || [];
     } catch (error) {
         console.error("スレッド一覧の取得に失敗しました:", error);
         throw error;
@@ -34,11 +34,11 @@ export const createThread = async (threadData) => {
             },
             body: JSON.stringify(threadData),
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         return await response.json();
     } catch (error) {
         console.error("スレッドの作成に失敗しました:", error);
@@ -55,11 +55,11 @@ export const postReply = async (threadId, replyData) => {
             },
             body: JSON.stringify(replyData),
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         return await response.json();
     } catch (error) {
         console.error("リプライの送信に失敗しました:", error);
