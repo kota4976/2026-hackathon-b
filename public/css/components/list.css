@@ -2,22 +2,26 @@
     font-size: 0.9rem;
     padding: 15px 15px 5px;
     margin: 0;
-    color: #666;
+    color: #888;
+    font-weight: bold;
 }
 
 .category-item {
     padding: 8px 15px;
     cursor: pointer;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px dashed #ccc;
 }
 
 .category-item:hover {
-    background-color: #f4f4f4;
+    background-color: rgba(0, 0, 0, 0.02);
+    color: #cc0000;
 }
 
 .category-item.active {
-    background-color: #e9ecef;
+    background-color: rgba(255, 107, 107, 0.1);
+    color: #ff6b6b; /* 赤ペンのような色 */
     font-weight: bold;
+    border-left: 4px solid #ff6b6b;
 }
 
 .thread-pane .content-list {
@@ -31,18 +35,40 @@
 }
 
 .thread-item {
+    margin: 10px 15px;
     padding: 12px 15px;
-    border-bottom: 1px solid #eee;
+    background-color: #232330; /* 基本のダーク紙色 */
+    border: 1px solid #333344;
+    box-shadow: 2px 3px 5px rgba(0,0,0,0.3);
     cursor: pointer;
+    border-radius: 2px;
+    transform: rotate(-0.5deg);
+    animation: fadeAway 180s ease-in forwards; /* 3分かけて澱みに沈む */
+}
+
+/* 擬似クラスで微妙な紙の色の違いと傾きを再現（彩度を落とす） */
+.thread-item:nth-child(2n) {
+    background-color: #202630; /* 少し青みがかったダーク紙 */
+    transform: rotate(0.8deg);
+}
+.thread-item:nth-child(3n) {
+    background-color: #2c252a; /* 少し赤みがかったダーク紙 */
+    transform: rotate(-1deg);
+}
+.thread-item:nth-child(5n) {
+    background-color: #252a26; /* 少し緑がかったダーク紙 */
+    transform: rotate(0.5deg);
 }
 
 .thread-item:hover {
-    background-color: #f9f9f9;
+    box-shadow: 3px 4px 6px rgba(0,0,0,0.5);
+    transform: scale(1.01) rotate(0deg);
+    transition: all 0.2s ease;
 }
 
 .thread-item.active {
-    background-color: #e9ecef;
-    border-left: 4px solid #007bff;
+    outline: 2px solid #ff6b6b; /* 赤ペンで囲んだような表現 */
+    outline-offset: 2px;
 }
 
 .thread-item-title {
@@ -52,7 +78,7 @@
 
 .thread-item-meta {
     font-size: 0.8rem;
-    color: #666;
+    color: #64748b;
     display: flex;
     justify-content: space-between;
 }

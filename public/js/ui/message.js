@@ -8,6 +8,7 @@ export const clearThreadDetail = () => {
     store.setCurrentThread(null);
     threadDetailContainer.classList.add('hidden');
     emptyStateDetail.classList.remove('hidden');
+    if (replyList) replyList.style.backgroundColor = '';
 };
 
 export const showThreadDetail = async (thread) => {
@@ -36,6 +37,10 @@ export const loadReplies = async (threadId) => {
         replyList.appendChild(errorDiv);
         return;
     }
+
+    // 背景色は固定（CSSに従う）
+    replyList.style.backgroundColor = '';
+
 
     if (replies.length === 0) {
         const emptyDiv = document.createElement('div');

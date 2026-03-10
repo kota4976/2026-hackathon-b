@@ -3,8 +3,10 @@
     max-width: 400px;
     text-align: left;
     padding: 20px;
-    border: 1px solid #ddd;
-    background: #f9f9f9;
+    border: none;
+    background: #20202a;
+    box-shadow: 2px 5px 15px rgba(0, 0, 0, 0.4);
+    transform: rotate(1deg);
 }
 
 .main-layout {
@@ -18,13 +20,16 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
-    background: #f4f4f4;
-    border-bottom: 1px solid #ddd;
+    background: transparent;
+    border-bottom: 2px dashed #333344;
 }
 
 .logo {
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
+    color: #eee;
+    letter-spacing: 2px;
+    text-decoration: underline wavy #ff6b6b;
 }
 
 .user-profile {
@@ -37,7 +42,7 @@
     display: grid;
     grid-template-columns: 200px 4px 300px 4px 1fr;
     height: calc(100vh - 50px);
-    border-top: 1px solid #ddd;
+    border-top: none;
 }
 
 .pane {
@@ -57,21 +62,23 @@
 
 .resizer {
     cursor: col-resize;
-    background-color: #ddd;
+    background-color: transparent;
+    border-left: 2px dashed rgba(255, 255, 255, 0.1);
     transition: background-color 0.2s ease;
     z-index: 10;
 }
 .resizer:hover, .resizer.dragging {
-    background-color: #007bff;
+    background-color: rgba(255, 107, 107, 0.2);
 }
 
 .pane-header {
-    padding: 10px 15px;
-    border-bottom: 1px solid #ddd;
+    padding: 15px;
+    border-bottom: 3px double #3a3a4a;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #f9f9f9;
+    background: rgba(22, 22, 30, 0.7);
+    backdrop-filter: blur(2px);
 }
 
 .pane-header h2 {
@@ -80,8 +87,8 @@
 }
 
 .meta-info {
-    font-size: 0.8rem;
-    color: #666;
+    font-size: 0.9rem;
+    color: #889;
 }
 
 /* Modal Layout */
@@ -91,7 +98,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -101,10 +108,25 @@
 .modal-content {
     width: 100%;
     max-width: 400px;
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background: #232330; /* 黒板のような深い色 */
+    padding: 30px;
+    border: 1px solid #333344;
+    box-shadow: 5px 10px 20px rgba(0,0,0,0.5);
+    transform: rotate(-1deg);
+    position: relative;
+}
+
+/* モーダルの上部にマスキングテープ風の装飾 */
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(2deg);
+    width: 100px;
+    height: 30px;
+    background: rgba(60, 60, 80, 0.8);
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
 }
 
 .modal-header {
@@ -122,7 +144,10 @@
     background: transparent;
     border: none;
     padding: 0;
-    color: #666;
+    color: #99a;
+}
+.close-btn:hover {
+    color: #ff6b6b;
 }
 
 .modal-actions {
