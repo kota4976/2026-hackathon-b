@@ -51,16 +51,7 @@ export const initModalFeature = () => {
 
         closeModal();
         
-        // 対象カテゴリを選択して再読み込み
-        const catList = document.querySelectorAll('.category-item');
-        let optionToClick = null;
-        catList.forEach(item => {
-            if(item.dataset.id === categoryId.toString()) optionToClick = item;
-        });
-        if(optionToClick) {
-            optionToClick.click();
-        } else {
-             loadCategories(); // フォールバック
-        }
+        // 最新のスレッド一覧を再取得して描画する
+        await loadThreads(categoryId);
     });
 };
