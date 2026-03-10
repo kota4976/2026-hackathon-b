@@ -258,22 +258,27 @@ Deno.serve(async (req) => {
           headers: { "Content-Type": "application/json" },
         });
       }
-      const newThread: Thread = {
-        threadId: Date.now(),
-        name,
-        title,
-        reply: [],
-      };
 
-      threads.get(categoryId)?.threads.push(newThread);
-
-      return new Response(JSON.stringify(newThread), {
-        status: 201,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
+      const newThreadId = Date.now(); // 簡易的にスレッドIDを生成
+      threadList.get(Number(categoryId))?.threads.push({
+        threadId: newThreadId,
+        name: name,
+        title: title,
       });
+      threadContents.set(newThreadId, {
+        threadId: newThreadId,
+        name: name,
+        title: title,
+        reply: [],
+      });
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: "スレッドを保存しました",
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
     } catch {
       return new Response(JSON.stringify({ error: "Invalid JSON" }), {
         status: 400,
@@ -281,6 +286,7 @@ Deno.serve(async (req) => {
       });
     }
   }
+
   if (req.method === "POST" && url.pathname === "/thread/reply") {
     const threadId = url.searchParams.get("threadId");
     if (!threadId) {
