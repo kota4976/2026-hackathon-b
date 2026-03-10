@@ -96,6 +96,14 @@ export const initMessageFeature = () => {
     replyForm = document.getElementById("replyForm");
     replyContent = document.getElementById("reply-content");
 
+    replyContent.addEventListener('input', () => {
+        const length = replyContent.value.length;
+        const counter = document.getElementById("reply-content-counter");
+        if (counter) {
+            counter.textContent = `${length}/100`;
+        }
+    });
+
     // リプライ送信
     replyForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -112,6 +120,8 @@ export const initMessageFeature = () => {
         }
 
         replyForm.reset();
+        const counter = document.getElementById("reply-content-counter");
+        if (counter) counter.textContent = "0/100";
         
         // 再描画
         await loadReplies(store.currentThreadId);

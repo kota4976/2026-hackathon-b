@@ -10,6 +10,8 @@ export const initModalFeature = () => {
     const createThreadForm = document.getElementById('createThreadForm');
     const threadCategorySelect = document.getElementById('thread-category');
 
+    const threadTitleInput = document.getElementById('thread-title');
+
     const openModal = () => {
         createThreadModal.classList.remove('hidden');
         if (store.currentCategoryId) {
@@ -20,7 +22,17 @@ export const initModalFeature = () => {
     const closeModal = () => {
         createThreadModal.classList.add('hidden');
         createThreadForm.reset();
+        const counter = document.getElementById('thread-title-counter');
+        if (counter) counter.textContent = '0/100';
     };
+
+    threadTitleInput.addEventListener('input', () => {
+        const length = threadTitleInput.value.length;
+        const counter = document.getElementById('thread-title-counter');
+        if (counter) {
+            counter.textContent = `${length}/100`;
+        }
+    });
 
     createThreadBtn.addEventListener('click', openModal);
     closeModalBtn.addEventListener('click', closeModal);
