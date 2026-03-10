@@ -19,6 +19,7 @@ type Thread = {
   threadId: number;
   name: string;
   title: string;
+  replyCount: number;
   reply: Reply[];
 };
 
@@ -35,6 +36,7 @@ threads.set(1, {
       threadId: 1,
       name: "テスト1",
       title: "テスト1のタイトル",
+      replyCount: 2,
       reply: [
         { name: "ユーザー1", content: "テスト1の返信1" },
         { name: "ユーザー2", content: "テスト1の返信2" },
@@ -44,6 +46,7 @@ threads.set(1, {
       threadId: 2,
       name: "テスト2",
       title: "テスト2のタイトル",
+      replyCount: 2,
       reply: [
         { name: "ユーザー3", content: "テスト2の返信1" },
         { name: "ユーザー4", content: "テスト2の返信2" },
@@ -57,6 +60,7 @@ threads.set(2, {
       threadId: 3,
       name: "研究1",
       title: "研究1のタイトル",
+      replyCount: 2,
       reply: [
         { name: "ユーザー5", content: "研究1の返信1" },
         { name: "ユーザー6", content: "研究1の返信2" },
@@ -66,6 +70,7 @@ threads.set(2, {
       threadId: 4,
       name: "研究2",
       title: "研究2のタイトル",
+      replyCount: 2,
       reply: [
         { name: "ユーザー7", content: "研究2の返信1" },
         { name: "ユーザー8", content: "研究2の返信2" },
@@ -79,6 +84,7 @@ threads.set(3, {
       threadId: 5,
       name: "仕事1",
       title: "仕事1のタイトル",
+      replyCount: 2,
       reply: [
         { name: "ユーザー9", content: "仕事1の返信1" },
         { name: "ユーザー10", content: "仕事1の返信2" },
@@ -88,6 +94,7 @@ threads.set(3, {
       threadId: 6,
       name: "仕事2",
       title: "仕事2のタイトル",
+      replyCount: 2,
       reply: [
         { name: "ユーザー11", content: "仕事2の返信1" },
         { name: "ユーザー12", content: "仕事2の返信2" },
@@ -184,6 +191,7 @@ Deno.serve(async (req) => {
         threadId: Date.now(),
         name,
         title,
+        replyCount: 0,
         reply: [],
       };
 

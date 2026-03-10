@@ -37,7 +37,15 @@ export const loadThreads = async (categoryId) => {
             metaDiv.className = 'thread-item-meta';
             const authorSpan = document.createElement('span');
             authorSpan.textContent = thread.name;
+            
+            const countSpan = document.createElement('span');
+            countSpan.className = 'reply-count';
+            countSpan.textContent = `リプライ: ${thread.replyCount}`;
+            countSpan.style.marginLeft = '10px';
+            countSpan.style.color = '#ff6b6b';
+            
             metaDiv.appendChild(authorSpan);
+            metaDiv.appendChild(countSpan);
 
             // 組み立て
             div.appendChild(titleDiv);
