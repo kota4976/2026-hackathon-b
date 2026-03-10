@@ -6,7 +6,7 @@ type Category = {
   name: string;
 };
 
-let categories: Category[] = [
+const categories: Category[] = [
   { categoryId: 1, name: "テスト" },
   { categoryId: 2, name: "研究" },
   { categoryId: 3, name: "仕事" },
@@ -106,8 +106,24 @@ Deno.serve(async (req) => {
     });
   }
 
-  if (req.method === "GET" && url.pathname === "/thread/list/") {
-    return new Response(JSON.stringify(threads), {
+  if (req.method === "GET" && url.pathname === "/thread/list") {
+    const categoryId = url.searchParams.get("categoryId");
+    if (!categoryId) {
+      return new Response(JSON.stringify({ error: "categoryId is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const threadsInCategory = threads.get(Number(categoryId));
+    if (!threadsInCategory) {
+      return new Response(JSON.stringify({ error: "Category not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify(threadsInCategory.threads), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
