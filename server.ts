@@ -11,20 +11,44 @@ let categories: Category[] = [
   { categoryId: 3, name: "仕事" },
 ];
 
-const threads = [
-  {
-    threadId: "ああああ",
-    name: "いいいい",
-    title: "うううう",
-    count: 2,
-  },
-  {
-    threadId: "eeee",
-    name: "oooo",
-    title: "12支",
-    count: 5,
-  },
-];
+type Threads = {
+  threads: Thread[];
+};
+
+type Thread = {
+  threadId: number;
+  name: string;
+  title: string;
+};
+
+// カテゴリーごとのスレッドを管理するMap
+const threads = new Map<number, Threads>();
+threads.set(1, {
+  threads: [
+    {
+      threadId: 1,
+      name: "テスト1",
+      title: "テスト1のタイトル",
+    },
+    {
+      threadId: 2,
+      name: "テスト2",
+      title: "テスト2のタイトル",
+    },
+  ],
+});
+threads.set(2, {
+  threads: [
+    { threadId: 3, name: "研究1", title: "研究1のタイトル" },
+    { threadId: 4, name: "研究2", title: "研究2のタイトル" },
+  ],
+});
+threads.set(3, {
+  threads: [
+    { threadId: 5, name: "仕事1", title: "仕事1のタイトル" },
+    { threadId: 6, name: "仕事2", title: "仕事2のタイトル" },
+  ],
+});
 
 Deno.serve((req) => {
   const url = new URL(req.url);
@@ -36,7 +60,17 @@ Deno.serve((req) => {
   }
 
   if (req.method === "GET" && url.pathname === "/thread/list") {
-    return new Response(JSON.stringify(threads), {
+    const categoryId = url.searchParams.get("categoryId");
+    if (!categoryId) {
+      return new Response(JSON.stringify({ error: "categoryId is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const threadsInCategory = threads.get(Number(categoryId)) ||
+      { threads: [] };
+    return new Response(JSON.stringify(threadsInCategory), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
