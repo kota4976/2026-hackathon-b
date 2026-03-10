@@ -80,6 +80,26 @@ export const loadReplies = async (threadId) => {
 
     // 最下部へスクロール
     replyList.scrollTop = replyList.scrollHeight;
+
+    // リプライが20件以上の場合、ペインを切り離すアニメーションを実行
+    if (replies.length >= 20) {
+        threadDetailContainer.classList.add('tear-off-anim');
+        
+        // アニメーション完了後に画面をクリアし、クラスも外す
+        setTimeout(() => {
+            clearThreadDetail();
+            threadDetailContainer.classList.remove('tear-off-anim');
+            
+            // スレッド一覧から現在選択中のスレッドのactive状態も解除する
+            const activeThread = document.querySelector('.thread-item.active');
+            if (activeThread) {
+                activeThread.classList.remove('active');
+            }
+        }, 1500); // CSSのanimation durationと合わせる
+    } else {
+        // 通常はアニメーションを解除しておく
+        threadDetailContainer.classList.remove('tear-off-anim');
+    }
 };
 
 export const initMessageFeature = () => {

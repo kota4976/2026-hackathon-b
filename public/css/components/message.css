@@ -88,3 +88,24 @@
     flex: 1;
     margin-bottom: 0;
 }
+
+@keyframes tearOffPage {
+    0% {
+        transform: rotate(0deg) scale(1) translateY(0);
+        transform-origin: top left;
+        opacity: 1;
+    }
+    20% {
+        transform: rotate(5deg) scale(1.02) translateY(-10px);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(-15deg) scale(0.8) translateY(100vh);
+        opacity: 0;
+    }
+}
+
+.tear-off-anim {
+    animation: tearOffPage 1.5s ease-in forwards !important;
+    pointer-events: none; /* アニメーション中の操作を無効化 */
+}
