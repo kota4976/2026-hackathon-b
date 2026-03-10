@@ -60,7 +60,17 @@ Deno.serve((req) => {
   }
 
   if (req.method === "GET" && url.pathname === "/thread/list") {
-    return new Response(JSON.stringify(threads), {
+    const categoryId = url.searchParams.get("categoryId");
+    if (!categoryId) {
+      return new Response(JSON.stringify({ error: "categoryId is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const threadsInCategory = threads.get(Number(categoryId)) ||
+      { threads: [] };
+    return new Response(JSON.stringify(threadsInCategory), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
