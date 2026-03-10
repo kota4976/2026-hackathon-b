@@ -16,7 +16,7 @@ export const showThreadDetail = (thread) => {
     detailThreadTitle.textContent = thread.title;
     detailThreadAuthor.textContent = `投稿者: ${thread.name}`;
     
-    loadReplies(thread.id);
+    loadReplies(thread.threadId);
 };
 
 export const loadReplies = (threadId) => {
