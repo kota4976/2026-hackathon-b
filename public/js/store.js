@@ -23,11 +23,7 @@ export const setCurrentThread = (id) => {
 
 // モックデータ
 
-export let MOCK_THREADS = [
-    { threadId: '1', categoryId: '1', name: '田中', title: '必修の単位落とすかもしれん…' },
-    { threadId: '2', categoryId: '3', name: '佐藤', title: '店長がシフト勝手に入れてくる' },
-    { threadId: '3', categoryId: '2', name: '鈴木', title: '教授の無茶振りがエグい' }
-];
+
 
 export let MOCK_REPLIES = {
     '1': [
