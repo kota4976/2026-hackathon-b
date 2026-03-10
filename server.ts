@@ -1,4 +1,5 @@
 import { serveDir } from "@std/http";
+import { appendFile } from "node:fs";
 
 type Category = {
   categoryId: number;
@@ -187,7 +188,50 @@ Deno.serve(async (req) => {
       });
     }
   }
+  if (req.method === "POST" && url.pathname === "/thread/reply") {
+    const threadId = url.searchParams.get("threadId");
+    if (!threadId) {
+      return new Response(JSON.stringify({ error: "threadId is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
+    const body = await req.json();
+    const { name, content } = body;
+    if (!name || !content) {
+      return new Response(
+        JSON.stringify({ error: "名前と内容は必須です" }),
+        { status: 400, headers: { "Content-Type": "application/json" } },
+      );
+    }
+
+    // スレッドIDに一致するスレッドを探して返信を追加
+    for (const threadsInCategory of threads.values()) {
+      const thread = threadsInCategory.threads.find(
+        (t) => t.threadId === Number(threadId),
+      );
+
+      // スレッドが見つかった場合は返信を追加
+      if (thread) {
+        thread.reply.push({ name, content });
+        return new Response(
+          JSON.stringify({
+            success: true,
+            message: "リプライを保存しました",
+            data: { threadId, name, content },
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+    }
+
+    // スレッドが見つからない場合は404エラー
+    return new Response(JSON.stringify({ error: "Thread not found" }), {
+      status: 404,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
   return serveDir(req, {
     fsRoot: "./public",
     urlRoot: "",

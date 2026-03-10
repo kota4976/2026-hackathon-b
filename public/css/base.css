@@ -1,106 +1,106 @@
 body {
-    font-family: sans-serif;
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-    height: 100vh;
-    overflow: hidden;
-    color: #333;
-    background-color: #fff;
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  height: 100vh;
+  overflow: hidden;
+  color: #333;
+  background-color: #fff;
 }
 
 ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 input, select {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
 }
 
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 .full-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
 }
 
 .screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .form-group {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 label {
-    display: block;
-    margin-bottom: 5px;
+  display: block;
+  margin-bottom: 5px;
 }
 
 .text-btn {
-    background: transparent;
-    color: #007bff;
-    padding: 5px 10px;
+  background: transparent;
+  color: #007bff;
+  padding: 5px 10px;
 }
 .text-btn:hover {
-    background: transparent;
-    text-decoration: underline;
+  background: transparent;
+  text-decoration: underline;
 }
 
 .icon-btn {
-    background: #f4f4f4;
-    color: #333;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    min-width: 30px;
-    min-height: 30px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    line-height: 1;
-    overflow: hidden;
+  background: #f4f4f4;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  line-height: 1;
+  overflow: hidden;
 }
 .icon-btn:hover {
-    background: #e0e0e0;
+  background: #e0e0e0;
 }
 .icon-btn svg {
-    width: 16px;
-    height: 16px;
+  width: 16px;
+  height: 16px;
 }
 
 .empty-state {
-    color: #666;
-    text-align: center;
+  color: #666;
+  text-align: center;
 }
