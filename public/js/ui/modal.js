@@ -41,10 +41,7 @@ export const initModalFeature = () => {
         };
 
         try {
-            // バックエンドに新規スレッド作成リクエストを送信
-            // await createThread(newThreadData);
-            const newThread = await createThread(newThreadData);
-            console.log("投稿が完了しました", newThread);
+            await createThread(newThreadData);
             
         } catch (error) {
             alert('スレッドの作成に失敗しました。');
