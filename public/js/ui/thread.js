@@ -4,7 +4,7 @@ import { showThreadDetail } from './message.js';
 export const loadThreads = (categoryId) => {
     const threadList = document.getElementById('thread-list');
     threadList.innerHTML = '';
-    const filteredThreads = store.MOCK_THREADS.filter(t => t.category_id === categoryId);
+    const filteredThreads = store.MOCK_THREADS.filter(t => t.categoryId === categoryId);
 
     if (filteredThreads.length === 0) {
         const emptyDiv = document.createElement('div');
@@ -18,7 +18,7 @@ export const loadThreads = (categoryId) => {
     filteredThreads.forEach(thread => {
         const div = document.createElement('div');
         div.className = 'thread-item';
-        div.dataset.id = thread.id;
+        div.dataset.id = thread.threadId; // DOMの dataset.id は既存の仕組みに合わせる
         
         // スレッドタイトル
         const titleDiv = document.createElement('div');
@@ -44,11 +44,11 @@ export const loadThreads = (categoryId) => {
 };
 
 export const selectThread = (thread) => {
-    store.setCurrentThread(thread.id);
+    store.setCurrentThread(thread.threadId);
     
     // 選択状態の更新
     document.querySelectorAll('.thread-item').forEach(el => {
-        el.classList.toggle('active', el.dataset.id === thread.id);
+        el.classList.toggle('active', el.dataset.id === thread.threadId);
     });
 
     showThreadDetail(thread);
