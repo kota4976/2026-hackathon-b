@@ -125,6 +125,44 @@ Deno.serve((req) => {
     });
   }
 
+  if (req.method === "GET" && url.pathname === "/thread/contents") {
+    const threadId = url.searchParams.get("threadId");
+    if (!threadId) {
+      return new Response(JSON.stringify({ error: "threadId is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    let threadContent: Thread | null = null;
+    for (const threadsInCategory of threads.values()) {
+      // スレッドIDに一致するスレッドを探す
+      const thread = threadsInCategory.threads.find(
+        (t) => t.threadId === Number(threadId),
+      );
+      if (thread) {
+        threadContent = thread;
+        break;
+      }
+    }
+
+    // スレッドが見つからない場合は404エラー
+    if (!threadContent) {
+      return new Response(JSON.stringify({ error: "Thread not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify(threadContent), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+  }
+
   return serveDir(req, {
     fsRoot: "./public",
     urlRoot: "",
