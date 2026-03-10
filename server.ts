@@ -96,7 +96,7 @@ threads.set(3, {
   ],
 });
 
-Deno.serve((req) => {
+Deno.serve(async (req) => {
   const url = new URL(req.url);
 
   if (req.method === "GET" && url.pathname === "/category") {
@@ -105,18 +105,8 @@ Deno.serve((req) => {
     });
   }
 
-  if (req.method === "GET" && url.pathname === "/thread/list") {
-    const categoryId = url.searchParams.get("categoryId");
-    if (!categoryId) {
-      return new Response(JSON.stringify({ error: "categoryId is required" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    const threadsInCategory = threads.get(Number(categoryId)) ||
-      { threads: [] };
-    return new Response(JSON.stringify(threadsInCategory), {
+  if (req.method === "GET" && url.pathname === "/thread/list/") {
+    return new Response(JSON.stringify(threads), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -161,6 +151,41 @@ Deno.serve((req) => {
         "Access-Control-Allow-Origin": "*",
       },
     });
+  }
+  //スレッドの作成
+  if (req.method === "POST" && url.pathname === "/thread") {
+    try {
+      const body = await req.json();
+      const { name, title, categoryId } = body;
+      //簡易チェック
+      if (!name || !title || !categoryId) {
+        return new Response(JSON.stringify({ error: "Missing fields" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      const newThread: Thread = {
+        threadId: Date.now(),
+        name,
+        title,
+        reply: [],
+      };
+
+      threads.get(categoryId)?.threads.push(newThread);
+
+      return new Response(JSON.stringify(newThread), {
+        status: 201,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+    } catch {
+      return new Response(JSON.stringify({ error: "Invalid JSON" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
   }
 
   return serveDir(req, {
