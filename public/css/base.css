@@ -104,3 +104,20 @@ label {
   color: #666;
   text-align: center;
 }
+.input-with-counter {
+  position: relative;
+}
+
+.input-with-counter input {
+  padding-right: 45px; /* カウンタのスペースを確保 */
+}
+
+.character-counter {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: #888;
+  pointer-events: none; /* 入力の邪魔にならないように */
+}
