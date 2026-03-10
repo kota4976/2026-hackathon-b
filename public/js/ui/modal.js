@@ -1,7 +1,9 @@
 import * as store from '../store.js';
 import { loadCategories } from './category.js';
+import { createThread } from '../api/thread.js';
 
 export const initModalFeature = () => {
+    // ... [existing element queries]
     const createThreadBtn = document.getElementById('open-create-thread-btn');
     const createThreadModal = document.getElementById('create-thread-modal');
     const closeModalBtn = document.getElementById('close-modal-btn');
@@ -11,7 +13,6 @@ export const initModalFeature = () => {
 
     const openModal = () => {
         createThreadModal.classList.remove('hidden');
-        // 現在のカテゴリを選択状態にする
         if (store.currentCategoryId) {
             threadCategorySelect.value = store.currentCategoryId;
         }
@@ -26,22 +27,27 @@ export const initModalFeature = () => {
     closeModalBtn.addEventListener('click', closeModal);
     cancelThreadBtn.addEventListener('click', closeModal);
 
-    createThreadForm.addEventListener('submit', (e) => {
+    createThreadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const title = document.getElementById('thread-title').value.trim();
-        const categoryId = document.getElementById('thread-category').value;
+        const categoryId = parseInt(document.getElementById('thread-category').value, 10);
 
         if (!title || !categoryId) return;
 
-        const newThread = {
-            id: 't' + Date.now(),
-            category_id: categoryId,
+        const newThreadData = {
+            categoryId: categoryId,
             name: store.currentUser,
             title: title
         };
 
-        store.addThread(newThread);
+        try {
+            // バックエンドに新規スレッド作成リクエストを送信
+            await createThread(newThreadData);
+        } catch (error) {
+            alert('スレッドの作成に失敗しました。');
+            return;
+        }
 
         closeModal();
         
@@ -49,7 +55,7 @@ export const initModalFeature = () => {
         const catList = document.querySelectorAll('.category-item');
         let optionToClick = null;
         catList.forEach(item => {
-            if(item.dataset.id === categoryId) optionToClick = item;
+            if(item.dataset.id === categoryId.toString()) optionToClick = item;
         });
         if(optionToClick) {
             optionToClick.click();
