@@ -21,7 +21,7 @@ export const setCurrentThread = (id) => {
     currentThreadId = id;
 };
 
-// モックデータ (カテゴリを削除)
+// モックデータ
 
 export let MOCK_THREADS = [
     { threadId: '1', categoryId: '1', name: '田中', title: '必修の単位落とすかもしれん…' },
