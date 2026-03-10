@@ -5,7 +5,7 @@ type Category = {
   name: string;
 };
 
-let categories: Category[] = [
+const categories: Category[] = [
   { categoryId: 1, name: "テスト" },
   { categoryId: 2, name: "研究" },
   { categoryId: 3, name: "仕事" },
