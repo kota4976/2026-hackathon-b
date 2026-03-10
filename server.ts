@@ -305,32 +305,26 @@ Deno.serve(async (req) => {
       );
     }
 
-    // スレッドIDに一致するスレッドを探して返信を追加
-    for (const threadsInCategory of threads.values()) {
-      const thread = threadsInCategory.threads.find(
-        (t) => t.threadId === Number(threadId),
-      );
-
-      // スレッドが見つかった場合は返信を追加
-      if (thread) {
-        thread.reply.push({ name, content });
-        return new Response(
-          JSON.stringify({
-            success: true,
-            message: "リプライを保存しました",
-            data: { threadId, name, content },
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
-      }
+    const thread = threadContents.get(Number(threadId));
+    // スレッドが存在しない場合はエラーを返す
+    if (!thread) {
+      return new Response(JSON.stringify({ error: "Thread not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    // スレッドが見つからない場合は404エラー
-    return new Response(JSON.stringify({ error: "Thread not found" }), {
-      status: 404,
-      headers: { "Content-Type": "application/json" },
-    });
+    thread.reply.push({ name, content });
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: "返信を保存しました",
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
   }
+
   return serveDir(req, {
     fsRoot: "./public",
     urlRoot: "",
