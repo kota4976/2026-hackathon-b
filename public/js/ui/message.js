@@ -112,11 +112,14 @@ export const initMessageFeature = () => {
         await loadReplies(store.currentThreadId);
         
         // 最新のスレッド一覧も再描画してリプライ数を更新
+        // その際、右画面がクリアされないように第2引数にtrueを渡す
         if (store.currentCategoryId) {
-            await loadThreads(store.currentCategoryId);
+            await loadThreads(store.currentCategoryId, true);
         }
         
-        // 選択状態を維持
-        document.querySelector(`.thread-item[data-id="${store.currentThreadId}"]`)?.classList.add('active');
+        // 選択状態を再付与 (再描画によってDOMが書き換わるため)
+        setTimeout(() => {
+            document.querySelector(`.thread-item[data-id="${store.currentThreadId}"]`)?.classList.add('active');
+        }, 50);
     });
 };

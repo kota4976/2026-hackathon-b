@@ -2,12 +2,14 @@ import * as store from "../store.js";
 import { clearThreadDetail, showThreadDetail } from "./message.js";
 import { fetchThreads } from "../api/thread.js";
 
-export const loadThreads = async (categoryId) => {
+export const loadThreads = async (categoryId, preserveDetailState = false) => {
   const threadList = document.getElementById("thread-list");
   threadList.innerHTML = "";
 
-  // スレッド詳細画面はカテゴリ切り替えで常にクリア
-  clearThreadDetail();
+  // スレッド詳細画面はカテゴリ切り替えで常にクリアするが、リプライ時は維持する
+  if (!preserveDetailState) {
+    clearThreadDetail();
+  }
 
   try {
     const filteredThreads = await fetchThreads(categoryId);
