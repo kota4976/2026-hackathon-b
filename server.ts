@@ -1,5 +1,4 @@
 import { serveDir } from "@std/http";
-import { appendFile } from "node:fs";
 
 type Category = {
   categoryId: number;
@@ -11,6 +10,17 @@ const categories: Category[] = [
   { categoryId: 2, name: "研究" },
   { categoryId: 3, name: "仕事" },
 ];
+
+type ThreadSummary = {
+  threadId: number;
+  name: string;
+  title: string;
+  replyCount: number;
+};
+
+type ThreadList = {
+  threads: ThreadSummary[];
+};
 
 type Threads = {
   threads: Thread[];
@@ -29,80 +39,90 @@ type Reply = {
   content: string;
 };
 
-// カテゴリーごとのスレッドを管理するMap
-const threads = new Map<number, Threads>();
-threads.set(1, {
-  threads: [
-    {
-      threadId: 1,
-      name: "テスト1",
-      title: "テスト1のタイトル",
-      replyCount: 2,
-      reply: [
-        { name: "ユーザー1", content: "テスト1の返信1" },
-        { name: "ユーザー2", content: "テスト1の返信2" },
-      ],
-    },
-    {
-      threadId: 2,
-      name: "テスト2",
-      title: "テスト2のタイトル",
-      replyCount: 2,
-      reply: [
-        { name: "ユーザー3", content: "テスト2の返信1" },
-        { name: "ユーザー4", content: "テスト2の返信2" },
-      ],
-    },
-  ],
-});
-threads.set(2, {
-  threads: [
-    {
-      threadId: 3,
-      name: "研究1",
-      title: "研究1のタイトル",
-      replyCount: 2,
-      reply: [
-        { name: "ユーザー5", content: "研究1の返信1" },
-        { name: "ユーザー6", content: "研究1の返信2" },
-      ],
-    },
-    {
-      threadId: 4,
-      name: "研究2",
-      title: "研究2のタイトル",
-      replyCount: 2,
-      reply: [
-        { name: "ユーザー7", content: "研究2の返信1" },
-        { name: "ユーザー8", content: "研究2の返信2" },
-      ],
-    },
-  ],
-});
-threads.set(3, {
-  threads: [
-    {
-      threadId: 5,
-      name: "仕事1",
-      title: "仕事1のタイトル",
-      replyCount: 2,
-      reply: [
-        { name: "ユーザー9", content: "仕事1の返信1" },
-        { name: "ユーザー10", content: "仕事1の返信2" },
-      ],
-    },
-    {
-      threadId: 6,
-      name: "仕事2",
-      title: "仕事2のタイトル",
-      replyCount: 2,
-      reply: [
-        { name: "ユーザー11", content: "仕事2の返信1" },
-        { name: "ユーザー12", content: "仕事2の返信2" },
-      ],
-    },
-  ],
-});
+const threadList = new Map<number, ThreadList>([
+  [1, {
+    threads: [
+      { threadId: 1, name: "テスト1", title: "テスト1のタイトル", replyCount: 2 },
+      { threadId: 2, name: "テスト2", title: "テスト2のタイトル", replyCount: 2 },
+    ],
+  }],
+  [2, {
+    threads: [
+      { threadId: 3, name: "研究1", title: "研究1のタイトル", replyCount: 2 },
+      { threadId: 4, name: "研究2", title: "研究2のタイトル", replyCount: 2 },
+    ],
+  }],
+  [3, {
+    threads: [
+      { threadId: 5, name: "仕事1", title: "仕事1のタイトル", replyCount: 2 },
+      { threadId: 6, name: "仕事2", title: "仕事2のタイトル", replyCount: 2 },
+    ],
+  }],
+]);
+
+// スレッドIDごとの内容を管理するMap
+const threadContents = new Map<number, Thread>([
+  [1, {
+    threadId: 1,
+    name: "テスト1",
+    title: "テスト1のタイトル",
+    replyCount: 2,
+    reply: [
+      { name: "ユーザー1", content: "テスト1の返信1" },
+      { name: "ユーザー2", content: "テスト1の返信2" },
+    ],
+  }],
+  [2, {
+    threadId: 2,
+    name: "テスト2",
+    title: "テスト2のタイトル",
+    replyCount: 2,
+    reply: [
+      { name: "ユーザー3", content: "テスト2の返信1" },
+      { name: "ユーザー4", content: "テスト2の返信2" },
+    ],
+  }],
+  [3, {
+    threadId: 3,
+    name: "研究1",
+    title: "研究1のタイトル",
+    replyCount: 2,
+    reply: [
+      { name: "ユーザー5", content: "研究1の返信1" },
+      { name: "ユーザー6", content: "研究1の返信2" },
+    ],
+  }],
+  [4, {
+    threadId: 4,
+    name: "研究2",
+    title: "研究2のタイトル",
+    replyCount: 2,
+    reply: [
+      { name: "ユーザー7", content: "研究2の返信1" },
+      { name: "ユーザー8", content: "研究2の返信2" },
+    ],
+  }],
+  [5, {
+    threadId: 5,
+    name: "仕事1",
+    title: "仕事1のタイトル",
+    replyCount: 2,
+    reply: [
+      { name: "ユーザー9", content: "仕事1の返信1" },
+      { name: "ユーザー10", content: "仕事1の返信2" },
+    ],
+  }],
+  [6, {
+    threadId: 6,
+    name: "仕事2",
+    title: "仕事2のタイトル",
+    replyCount: 2,
+    reply: [
+      { name: "ユーザー11", content: "仕事2の返信1" },
+      { name: "ユーザー12", content: "仕事2の返信2" },
+    ],
+  }],
+]);
 
 Deno.serve(async (req) => {
   const url = new URL(req.url);
@@ -122,15 +142,15 @@ Deno.serve(async (req) => {
       });
     }
 
-    const threadsInCategory = threads.get(Number(categoryId));
-    if (!threadsInCategory) {
+    const threadListForCategory = threadList.get(Number(categoryId));
+    if (!threadListForCategory) {
       return new Response(JSON.stringify({ error: "Category not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify(threadsInCategory.threads), {
+    return new Response(JSON.stringify(threadListForCategory), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -148,19 +168,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    let threadContent: Thread | null = null;
-    for (const threadsInCategory of threads.values()) {
-      // スレッドIDに一致するスレッドを探す
-      const thread = threadsInCategory.threads.find(
-        (t) => t.threadId === Number(threadId),
-      );
-      if (thread) {
-        threadContent = thread;
-        break;
-      }
-    }
-
-    // スレッドが見つからない場合は404エラー
+    const threadContent = threadContents.get(Number(threadId));
     if (!threadContent) {
       return new Response(JSON.stringify({ error: "Thread not found" }), {
         status: 404,
@@ -176,6 +184,7 @@ Deno.serve(async (req) => {
       },
     });
   }
+
   //スレッドの作成
   if (req.method === "POST" && url.pathname === "/thread") {
     try {
@@ -188,23 +197,29 @@ Deno.serve(async (req) => {
           headers: { "Content-Type": "application/json" },
         });
       }
-      const newThread: Thread = {
-        threadId: Date.now(),
-        name,
-        title,
+
+      const newThreadId = Date.now(); // 簡易的にスレッドIDを生成
+      threadList.get(Number(categoryId))?.threads.push({
+        threadId: newThreadId,
+        name: name,
+        title: title,
+        replyCount: 0,
+      });
+      threadContents.set(newThreadId, {
+        threadId: newThreadId,
+        name: name,
+        title: title,
         replyCount: 0,
         reply: [],
-      };
-
-      threads.get(categoryId)?.threads.push(newThread);
-
-      return new Response(JSON.stringify(newThread), {
-        status: 201,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
       });
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: "スレッドを保存しました",
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
     } catch {
       return new Response(JSON.stringify({ error: "Invalid JSON" }), {
         status: 400,
@@ -212,6 +227,7 @@ Deno.serve(async (req) => {
       });
     }
   }
+
   if (req.method === "POST" && url.pathname === "/thread/reply") {
     const threadId = url.searchParams.get("threadId");
     if (!threadId) {
@@ -230,33 +246,37 @@ Deno.serve(async (req) => {
       );
     }
 
-    // スレッドIDに一致するスレッドを探して返信を追加
-    for (const threadsInCategory of threads.values()) {
-      const thread = threadsInCategory.threads.find(
-        (t) => t.threadId === Number(threadId),
-      );
+    const thread = threadContents.get(Number(threadId));
+    // スレッドが存在しない場合はエラーを返す
+    if (!thread) {
+      return new Response(JSON.stringify({ error: "Thread not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
-      // スレッドが見つかった場合は返信を追加
-      if (thread) {
-        thread.replyCount++;
-        thread.reply.push({ name, content });
-        return new Response(
-          JSON.stringify({
-            success: true,
-            message: "リプライを保存しました",
-            data: { threadId, name, content },
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
+    // 返信を追加し、カウントをアップ
+    thread.reply.push({ name, content });
+    thread.replyCount++;
+
+    // サマリー側のカウントも更新
+    for (const categoryThreads of threadList.values()) {
+      const summary = categoryThreads.threads.find(t => t.threadId === Number(threadId));
+      if (summary) {
+        summary.replyCount++;
+        break;
       }
     }
 
-    // スレッドが見つからない場合は404エラー
-    return new Response(JSON.stringify({ error: "Thread not found" }), {
-      status: 404,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: "返信を保存しました",
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
   }
+
   return serveDir(req, {
     fsRoot: "./public",
     urlRoot: "",
