@@ -17,7 +17,7 @@ const threads=[
 Deno.serve((req) => {
     const url = new URL(req.url);
 
-    if(req.method === "GET" && url.pathname === "/thread/list/"){
+    if(req.method === "GET" && url.pathname === "/thread/list"){
         return new Response(JSON.stringify(threads),{
             status:200,
             headers:{
