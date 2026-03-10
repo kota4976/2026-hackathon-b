@@ -24,7 +24,11 @@ export const loadReplies = (threadId) => {
     const replies = store.MOCK_REPLIES[threadId] || [];
 
     if (replies.length === 0) {
-        replyList.innerHTML = '<div class="empty-state" style="margin-top:20px;">まだ返信がありません。最初の返信をしよう！</div>';
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'empty-state';
+        emptyDiv.style.marginTop = '20px';
+        emptyDiv.textContent = 'まだ返信がありません。最初の返信をしよう！';
+        replyList.appendChild(emptyDiv);
         return;
     }
 
@@ -33,12 +37,25 @@ export const loadReplies = (threadId) => {
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${isMine ? 'mine' : ''}`;
         
-        msgDiv.innerHTML = `
-            <div class="message-header">
-                <span class="message-author">${reply.name}</span>
-            </div>
-            <div class="message-bubble">${reply.content}</div>
-        `;
+        // ヘッダー部分
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'message-header';
+        
+        const authorSpan = document.createElement('span');
+        authorSpan.className = 'message-author';
+        authorSpan.textContent = reply.name;
+        
+        headerDiv.appendChild(authorSpan);
+        
+        // 本文部分
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'message-bubble';
+        bubbleDiv.textContent = reply.content;
+        
+        // 組み立て
+        msgDiv.appendChild(headerDiv);
+        msgDiv.appendChild(bubbleDiv);
+        
         replyList.appendChild(msgDiv);
     });
 
