@@ -45,3 +45,24 @@ export const createThread = async (threadData) => {
         throw error;
     }
 };
+
+export const postReply = async (threadId, replyData) => {
+    try {
+        const response = await fetch(`/thread/reply?threadId=${threadId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(replyData),
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error("リプライの送信に失敗しました:", error);
+        throw error;
+    }
+};

@@ -1,133 +1,133 @@
 #registration-screen > div {
-    width: 100%;
-    max-width: 400px;
-    text-align: left;
-    padding: 20px;
-    border: 1px solid #ddd;
-    background: #f9f9f9;
+  width: 100%;
+  max-width: 400px;
+  text-align: left;
+  padding: 20px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
 }
 
 .main-layout {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-header {
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    background: #f4f4f4;
-    border-bottom: 1px solid #ddd;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: #f4f4f4;
+  border-bottom: 1px solid #ddd;
 }
 
 .logo {
-    font-weight: bold;
-    font-size: 1.2rem;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .three-pane-container {
-    display: grid;
-    grid-template-columns: 200px 4px 300px 4px 1fr;
-    height: calc(100vh - 50px);
-    border-top: 1px solid #ddd;
+  display: grid;
+  grid-template-columns: 200px 4px 300px 4px 1fr;
+  height: calc(100vh - 50px);
+  border-top: 1px solid #ddd;
 }
 
 .pane {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 .pane-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-    height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  height: 100%;
 }
 
 .resizer {
-    cursor: col-resize;
-    background-color: #ddd;
-    transition: background-color 0.2s ease;
-    z-index: 10;
+  cursor: col-resize;
+  background-color: #ddd;
+  transition: background-color 0.2s ease;
+  z-index: 10;
 }
 .resizer:hover, .resizer.dragging {
-    background-color: #007bff;
+  background-color: #007bff;
 }
 
 .pane-header {
-    padding: 10px 15px;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #f9f9f9;
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9f9f9;
 }
 
 .pane-header h2 {
-    font-size: 1rem;
-    margin: 0;
+  font-size: 1rem;
+  margin: 0;
 }
 
 .meta-info {
-    font-size: 0.8rem;
-    color: #666;
+  font-size: 0.8rem;
+  color: #666;
 }
 
 /* Modal Layout */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
 }
 
 .modal-content {
-    width: 100%;
-    max-width: 400px;
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .modal-header h3 {
-    margin: 0;
+  margin: 0;
 }
 
 .close-btn {
-    background: transparent;
-    border: none;
-    padding: 0;
-    color: #666;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #666;
 }
 
 .modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
 }

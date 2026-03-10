@@ -1,13 +1,20 @@
 import * as store from '../store.js';
 import { loadThreads } from './thread.js';
-import { fetchThreadContents } from '../api/thread.js';
+import { fetchThreadContents, postReply } from '../api/thread.js';
 
-let threadDetailContainer, emptyStateDetail, detailThreadTitle, detailThreadAuthor, replyList, replyForm, replyContent;
+let threadDetailContainer,
+  emptyStateDetail,
+  detailThreadTitle,
+  detailThreadAuthor,
+  replyList,
+  replyForm,
+  replyContent;
 
 export const clearThreadDetail = () => {
-    store.setCurrentThread(null);
-    threadDetailContainer.classList.add('hidden');
-    emptyStateDetail.classList.remove('hidden');
+  store.setCurrentThread(null);
+  threadDetailContainer.classList.add("hidden");
+  emptyStateDetail.classList.remove("hidden");
+  if (replyList) replyList.style.backgroundColor = '';
 };
 
 export const showThreadDetail = async (thread) => {
@@ -37,39 +44,42 @@ export const loadReplies = async (threadId) => {
         return;
     }
 
+    // 背景色は固定（CSSに従う）
+    replyList.style.backgroundColor = '';
+
     if (replies.length === 0) {
-        const emptyDiv = document.createElement('div');
-        emptyDiv.className = 'empty-state';
-        emptyDiv.style.marginTop = '20px';
-        emptyDiv.textContent = 'まだ返信がありません。最初の返信をしよう！';
+        const emptyDiv = document.createElement("div");
+        emptyDiv.className = "empty-state";
+        emptyDiv.style.marginTop = "20px";
+        emptyDiv.textContent = "まだ返信がありません。最初の返信をしよう！";
         replyList.appendChild(emptyDiv);
         return;
     }
 
-    replies.forEach(reply => {
+    replies.forEach((reply) => {
         const isMine = reply.name === store.currentUser;
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${isMine ? 'mine' : ''}`;
-        
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `message ${isMine ? "mine" : ""}`;
+
         // ヘッダー部分
-        const headerDiv = document.createElement('div');
-        headerDiv.className = 'message-header';
-        
-        const authorSpan = document.createElement('span');
-        authorSpan.className = 'message-author';
+        const headerDiv = document.createElement("div");
+        headerDiv.className = "message-header";
+
+        const authorSpan = document.createElement("span");
+        authorSpan.className = "message-author";
         authorSpan.textContent = reply.name;
-        
+
         headerDiv.appendChild(authorSpan);
-        
+
         // 本文部分
-        const bubbleDiv = document.createElement('div');
-        bubbleDiv.className = 'message-bubble';
+        const bubbleDiv = document.createElement("div");
+        bubbleDiv.className = "message-bubble";
         bubbleDiv.textContent = reply.content;
-        
+
         // 組み立て
         msgDiv.appendChild(headerDiv);
         msgDiv.appendChild(bubbleDiv);
-        
+
         replyList.appendChild(msgDiv);
     });
 
@@ -78,13 +88,13 @@ export const loadReplies = async (threadId) => {
 };
 
 export const initMessageFeature = () => {
-    threadDetailContainer = document.getElementById('thread-detail-container');
-    emptyStateDetail = document.getElementById('empty-state-detail');
-    detailThreadTitle = document.getElementById('detail-thread-title');
-    detailThreadAuthor = document.getElementById('detail-thread-author');
-    replyList = document.getElementById('reply-list');
-    replyForm = document.getElementById('replyForm');
-    replyContent = document.getElementById('reply-content');
+    threadDetailContainer = document.getElementById("thread-detail-container");
+    emptyStateDetail = document.getElementById("empty-state-detail");
+    detailThreadTitle = document.getElementById("detail-thread-title");
+    detailThreadAuthor = document.getElementById("detail-thread-author");
+    replyList = document.getElementById("reply-list");
+    replyForm = document.getElementById("replyForm");
+    replyContent = document.getElementById("reply-content");
 
     // リプライ送信
     replyForm.addEventListener('submit', async (e) => {
@@ -94,7 +104,12 @@ export const initMessageFeature = () => {
         const content = replyContent.value.trim();
         if (!content) return;
 
-        store.addReply(store.currentThreadId, store.currentUser, content);
+        try {
+            await postReply(store.currentThreadId, { name: store.currentUser, content });
+        } catch (error) {
+            alert('リプライの送信に失敗しました。');
+            return;
+        }
 
         replyForm.reset();
         
