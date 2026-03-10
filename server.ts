@@ -11,6 +11,16 @@ const categories: Category[] = [
   { categoryId: 3, name: "仕事" },
 ];
 
+type ThreadSummary = {
+  threadId: number;
+  name: string;
+  title: string;
+};
+
+type ThreadList = {
+  threads: ThreadSummary[];
+};
+
 type Threads = {
   threads: Thread[];
 };
