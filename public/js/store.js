@@ -21,16 +21,3 @@ export const setCurrentThread = (id) => {
     currentThreadId = id;
 };
 
-
-export let MOCK_REPLIES = {};
-
-export const addThread = (thread) => {
-    MOCK_THREADS.unshift(thread);
-};
-
-export const addReply = (threadId, name, content) => {
-    if (!MOCK_REPLIES[threadId]) {
-        MOCK_REPLIES[threadId] = [];
-    }
-    MOCK_REPLIES[threadId].push({ name, content });
-};
