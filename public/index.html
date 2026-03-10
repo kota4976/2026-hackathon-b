@@ -14,7 +14,6 @@
 </head>
 <body>
 
-    <!-- 登録（名前入力）画面 -->
     <div id="registration-screen" class="screen full-center">
         <div class="glass-card">
             <h1>アプリ名</h1>
@@ -28,9 +27,7 @@
         </div>
     </div>
 
-    <!-- メイン画面 -->
     <div id="main-app-screen" class="screen main-layout hidden">
-        <!-- ヘッダー -->
         <header class="app-header">
             <div class="logo">アプリ名</div>
             <div class="user-profile">
@@ -39,21 +36,16 @@
             </div>
         </header>
 
-        <!-- 3ペインレイアウト -->
         <div id="pane-container" class="three-pane-container">
             
-            <!-- 左ペイン: カテゴリ -->
             <aside class="pane category-pane">
                 <h2>もくじ</h2>
                 <ul id="category-list" class="nav-list">
-                        <!-- JSで動的に追加される -->
                 </ul>
             </aside>
 
-            <!-- ドラッグ用境界線 -->
             <div class="resizer" id="resizer-1"></div>
 
-            <!-- 中央ペイン: スレッド一覧 -->
             <main class="pane thread-pane">
                 <div class="pane-header">
                     <h2 id="current-category-title">いまのボヤキ</h2>
@@ -67,7 +59,6 @@
             <!-- ドラッグ用境界線 -->
             <div class="resizer" id="resizer-2"></div>
 
-            <!-- 右ペイン: スレッド詳細 -->
             <section class="pane detail-pane">
                 <div id="thread-detail-container" class="hidden">
                     <div class="pane-header">
