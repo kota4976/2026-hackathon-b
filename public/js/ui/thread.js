@@ -7,7 +7,11 @@ export const loadThreads = (categoryId) => {
     const filteredThreads = store.MOCK_THREADS.filter(t => t.category_id === categoryId);
 
     if (filteredThreads.length === 0) {
-        threadList.innerHTML = '<div class="empty-state" style="padding: 20px;">まだスレッドがありません。</div>';
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'empty-state';
+        emptyDiv.style.padding = '20px';
+        emptyDiv.textContent = 'まだスレッドがありません。';
+        threadList.appendChild(emptyDiv);
         return;
     }
 
@@ -16,12 +20,21 @@ export const loadThreads = (categoryId) => {
         div.className = 'thread-item';
         div.dataset.id = thread.id;
         
-        div.innerHTML = `
-            <div class="thread-item-title">${thread.title}</div>
-            <div class="thread-item-meta">
-                <span>${thread.name}</span>
-            </div>
-        `;
+        // スレッドタイトル
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'thread-item-title';
+        titleDiv.textContent = thread.title;
+
+        // メタ情報 (投稿者名など)
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'thread-item-meta';
+        const authorSpan = document.createElement('span');
+        authorSpan.textContent = thread.name;
+        metaDiv.appendChild(authorSpan);
+
+        // 組み立て
+        div.appendChild(titleDiv);
+        div.appendChild(metaDiv);
         
         div.addEventListener('click', () => {
             selectThread(thread);
