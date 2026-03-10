@@ -66,7 +66,43 @@
     border-left: 2px dashed rgba(255, 255, 255, 0.1);
     transition: background-color 0.2s ease;
     z-index: 10;
+    position: relative; /* 子要素（ハサミなど）の基準用 */
 }
+
+/* メッセージ画面の左の縦のラインを切り取るアニメーション（JSで .cutting クラスが付与された時のみ） */
+#resizer-2.cutting {
+    border-left: none; /* 元のborderを消す */
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 50%, transparent 50%);
+    background-size: 2px 16px;
+    background-repeat: repeat-y;
+    background-position: left top;
+    animation: dashScan 1s linear infinite;
+}
+
+#resizer-2.cutting::before {
+    content: "✂";
+    position: absolute;
+    left: -7px;
+    top: 0;
+    font-size: 16px;
+    color: rgba(255, 107, 107, 0.7); /* ハサミの色 */
+    transform: rotate(180deg); /* 刃を下に向ける */
+    animation: cutDown 2s linear forwards; /* 2秒で下まで切り下ろす（clip-pathの60%にあたる1.8sに近い時間） */
+    pointer-events: none;
+}
+
+@keyframes dashScan {
+    from { background-position: left 0; }
+    to { background-position: left -16px; }
+}
+
+@keyframes cutDown {
+    0% { top: 0%; opacity: 0; }
+    5% { opacity: 1; }
+    95% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
 .resizer:hover, .resizer.dragging {
     background-color: rgba(255, 107, 107, 0.2);
 }
