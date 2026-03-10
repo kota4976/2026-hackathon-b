@@ -35,8 +35,8 @@ export const initModalFeature = () => {
         if (!title || !categoryId) return;
 
         const newThread = {
-            threadId: Date.now().toString(), // バックエンドに合わせて文字列や数字に変更
-            categoryId: categoryId,
+            id: 't' + Date.now(),
+            category_id: categoryId,
             name: store.currentUser,
             title: title
         };

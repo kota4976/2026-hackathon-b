@@ -21,35 +21,3 @@ export const setCurrentThread = (id) => {
     currentThreadId = id;
 };
 
-// モックデータ
-
-
-
-export let MOCK_REPLIES = {
-    '1': [
-        { name: '田中', content: 'レポートの締め切り今日だったのマジで知らんかった。' },
-        { name: '山田', content: 'うわ、どんまい。俺も1年ん時やらかしたわ。' },
-        { name: '田中', content: '教授に土下座メール送ってみる…' }
-    ],
-    '2': [
-        { name: '佐藤', content: '明日休みなのに勝手に出勤になってる。マジでありえない。' },
-        { name: '高橋', content: '労基案件でしょそれ。辞めた方がいいよ。' },
-        { name: '佐藤', content: '次の給料出たらマジで飛ぶわ。' }
-    ],
-    '3': [
-        { name: '鈴木', content: '明日までに英語の論文10本読んでこいとか正気か？' },
-        { name: '山田', content: '絶対無理やろそれｗ 寝れないじゃん。' },
-        { name: '鈴木', content: 'もう諦めてYouTube見てるわ。おやすみ。' }
-    ]
-};
-
-export const addThread = (thread) => {
-    MOCK_THREADS.unshift(thread);
-};
-
-export const addReply = (threadId, name, content) => {
-    if (!MOCK_REPLIES[threadId]) {
-        MOCK_REPLIES[threadId] = [];
-    }
-    MOCK_REPLIES[threadId].push({ name, content });
-};
