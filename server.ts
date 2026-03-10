@@ -1,4 +1,5 @@
 import { serveDir } from "@std/http";
+import { json } from "node:stream/consumers";
 
 type Category = {
   categoryId: number;
@@ -11,46 +12,22 @@ let categories: Category[] = [
   { categoryId: 3, name: "仕事" },
 ];
 
-type Threads = {
-  threads: Thread[];
-};
+const threads = [
+  {
+    threadId: "ああああ",
+    name: "いいいい",
+    title: "うううう",
+    count: 2,
+  },
+  {
+    threadId: "eeee",
+    name: "oooo",
+    title: "12支",
+    count: 5,
+  },
+];
 
-type Thread = {
-  threadId: number;
-  name: string;
-  title: string;
-};
-
-// カテゴリーごとのスレッドを管理するMap
-const threads = new Map<number, Threads>();
-threads.set(1, {
-  threads: [
-    {
-      threadId: 1,
-      name: "テスト1",
-      title: "テスト1のタイトル",
-    },
-    {
-      threadId: 2,
-      name: "テスト2",
-      title: "テスト2のタイトル",
-    },
-  ],
-});
-threads.set(2, {
-  threads: [
-    { threadId: 3, name: "研究1", title: "研究1のタイトル" },
-    { threadId: 4, name: "研究2", title: "研究2のタイトル" },
-  ],
-});
-threads.set(3, {
-  threads: [
-    { threadId: 5, name: "仕事1", title: "仕事1のタイトル" },
-    { threadId: 6, name: "仕事2", title: "仕事2のタイトル" },
-  ],
-});
-
-Deno.serve((req) => {
+Deno.serve(async(req) => {
   const url = new URL(req.url);
 
   if (req.method === "GET" && url.pathname === "/category") {
@@ -59,18 +36,8 @@ Deno.serve((req) => {
     });
   }
 
-  if (req.method === "GET" && url.pathname === "/thread/list") {
-    const categoryId = url.searchParams.get("categoryId");
-    if (!categoryId) {
-      return new Response(JSON.stringify({ error: "categoryId is required" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    const threadsInCategory = threads.get(Number(categoryId)) ||
-      { threads: [] };
-    return new Response(JSON.stringify(threadsInCategory), {
+  if (req.method === "GET" && url.pathname === "/thread/list/") {
+    return new Response(JSON.stringify(threads), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -78,6 +45,38 @@ Deno.serve((req) => {
       },
     });
   }
+    //スレッドの作成
+  if(req.method === "POST" && url.pathname === "/thread"){
+    try{
+    const body = await req.json();
+    const {name,title,content,categoryId}=body;
+    //簡易チェック
+    if(!name || !title || !content || !categoryId){
+      return new Response(JSON.stringify({error:"Missing fields"}),{
+        status:400,
+        headers:{"Content-Type":"application/json"},
+      });
+    }
+    const newThread = {
+      threadId: Date.now().toString(),
+      name,
+      title,
+      content,
+      categoryId,
+      count:0,
+    };
+    threads.push(newThread);
+
+    return new Response(JSON.stringify({message:"Success",thread:newThread}),{
+      status:201,
+      headers:{"Content-Type":"application/json"},
+    });
+  }catch{
+      return new Response(JSON.stringify({error:"Invalid JSON"}),{
+      status:400,
+      headers:{"Content-Type":"application/json"}, 
+    });
+  }}
 
   return serveDir(req, {
     fsRoot: "./public",
