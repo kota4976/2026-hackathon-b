@@ -67,14 +67,14 @@ export const postReply = async (threadId, replyData) => {
     }
 };
 
-export const toggleReplyLike = async (threadId, replyIndex, name) => {
+export const toggleReplyLike = async (threadId, replyIndex, action) => {
     try {
         const response = await fetch(`/thread/reply/like`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ threadId, replyIndex, name }),
+            body: JSON.stringify({ threadId, replyIndex, action }),
         });
 
         if (!response.ok) {

@@ -75,12 +75,12 @@ export const loadReplies = async (threadId) => {
         const likeBtn = document.createElement('button');
         likeBtn.className = 'reply-like-btn text-btn';
         
-        const likedByMe = reply.likedBy && reply.likedBy.includes(store.currentUser);
+        const likedByMe = store.isReplyLiked(threadId, index);
         if (likedByMe) {
             likeBtn.classList.add('liked');
         }
 
-        const likeCount = reply.likedBy ? reply.likedBy.length : 0;
+        const likeCount = reply.likeCount || 0;
         likeBtn.innerHTML = `🔥 <span class="like-count">${likeCount > 0 ? likeCount : ''}</span>`;
         
         likeBtn.addEventListener('click', async () => {
@@ -88,14 +88,19 @@ export const loadReplies = async (threadId) => {
             // 連打防止のため一時的に無効化
             likeBtn.disabled = true;
             try {
+                // ローカルのいいね状態を切り替え、実行すべきaction(add/remove)を取得
+                const action = store.toggleReplyLikeLocal(threadId, index);
+                
                 // api/thread.jsに追加したtoggleReplyLikeを呼び出す
                 const toggleReplyLike = (await import('../api/thread.js')).toggleReplyLike;
-                await toggleReplyLike(threadId, index, store.currentUser);
+                await toggleReplyLike(threadId, index, action);
+                
                 // 再描画して最新状態を反映
                 await loadReplies(threadId);
             } catch (error) {
                 console.error("いいねの更新に失敗しました", error);
                 likeBtn.disabled = false;
+                // 失敗した場合はローカルのいいね状態を元に戻す処理を入れるとより丁寧ですが、今回は簡易実装
             }
         });
 
