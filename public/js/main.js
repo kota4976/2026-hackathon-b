@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const regScreen = document.getElementById("registration-screen");
   const mainScreen = document.getElementById("main-app-screen");
   const currentUsernameSpan = document.getElementById("current-username");
-
+  const searchInput = document.getElementById('thread-search');
+  const threadList = document.getElementById('thread-list');
   // 画面切り替え
   window.showMainScreen = () => {
     regScreen.classList.add("hidden");
@@ -41,4 +42,21 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     window.showRegistrationScreen();
   }
+  
+  //検索機能
+  searchInput.addEventListener('input', (e) => {
+    const keyword = e.target.value.toLowerCase(); // 検索文字を小文字に統一
+    const threads = threadList.getElementsByClassName('thread-item'); // 各スレッドの要素
+
+    Array.from(threads).forEach(thread => {
+      // スレッド内のテキスト（タイトルなど）を取得
+      const title = thread.textContent.toLowerCase();
+    
+      if (title.includes(keyword)) {
+      thread.classList.remove('hidden'); // キーワードが含まれば表示
+      } else {
+      thread.classList.add('hidden');    // 含まれなければ非表示
+      }
+    });
+});
 });
