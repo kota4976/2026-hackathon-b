@@ -121,36 +121,52 @@
     margin-bottom: 0;
 }
 
-@keyframes scissorsCut {
-    /* 0%〜60%: 左上から左下へ切り込みが入る（左の縦ラインを切り取るイメージ） */
-    0% {
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-        transform: rotate(0deg) translateY(0);
-        opacity: 1;
-    }
-    30% {
-        clip-path: polygon(0 30%, 100% 0, 100% 100%, 0 100%);
-    }
-    60% {
-        clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 100%);
-        transform: rotate(0deg) translateY(0);
-        opacity: 1;
-    }
-    
-    /* 60%〜100%: 切り終わってハラリと落ちる */
-    70% {
-        transform: rotate(-2deg) translateY(20px);
-        opacity: 0.9;
-    }
-    100% {
-        clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 100%);
-        transform: rotate(-10deg) translateY(100vh);
-        opacity: 0;
-    }
+/* 燃焼アニメーション用 (Gooey effect) */
+.fire-container {
+    position: absolute;
+    bottom: -80px;
+    left: 0;
+    width: 100%;
+    height: calc(100% + 150px);
+    pointer-events: none;
+    z-index: 9999;
+    /* 黒背景にボカシと高コントラストを重ねて色を融合(Gooey)させる */
+    background: transparent; /* 背景全体を黒くすると画面が見えなくなるため透過 */
+    filter: drop-shadow(0 -10px 20px rgba(255, 50, 0, 0.8)); /* 燃え上がる熱気 */
+    overflow: hidden;
 }
 
-.cut-off-anim {
-    animation: scissorsCut 3s ease-in-out forwards !important;
-    pointer-events: none; /* アニメーション中の操作を無効化 */
-    transform-origin: bottom right; /* 右下を軸に落ちる */
+/* ページ下部からせり上がる炎のレイヤー */
+.fire-gooey-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    filter: blur(10px) contrast(30); /* 融合効果 */
+}
+
+/* Gooeyの中で動く炎の粒（これが融合して炎の形になる） */
+.fire-blob {
+    position: absolute;
+    border-radius: 50%;
+    background: #ff5000; /* メインの炎の色 */
+    /* 明るい黄色〜白を少し混ぜて高温を表現 */
+    box-shadow: 0 0 10px #ffea00, 0 0 20px #fff;
+    pointer-events: none;
+}
+
+/* 燃え尽きる境界線を光らせるための要素（JSでclip-pathに合わせて上へ動かす） */
+.burn-edge {
+    position: absolute;
+    left: -5%;
+    width: 110%;
+    height: 20px;
+    background: #ffea00;
+    box-shadow: 0 0 20px 10px #ff5000, 0 0 40px 20px #ff0000;
+    border-radius: 50%;
+    filter: blur(5px);
+    z-index: 10000;
+    pointer-events: none;
 }
