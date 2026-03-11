@@ -340,14 +340,15 @@ Deno.serve(async (req) => {
         });
       }
 
-      const thread = threadContents.get(Number(threadId));
-      if (!thread) {
+      // いいねの切り替えは、スレッド内容をkvから取得して行う
+      const threadContentResult = await kv.get(["thread", Number(threadId)]);
+      if (!threadContentResult.value) {
         return new Response(JSON.stringify({ error: "Thread not found" }), {
           status: 404,
           headers: { "Content-Type": "application/json" },
         });
       }
-
+      const thread = threadContentResult.value as Thread;
       const reply = thread.reply[Number(replyIndex)];
       if (!reply) {
         return new Response(JSON.stringify({ error: "Reply not found" }), {
@@ -357,10 +358,6 @@ Deno.serve(async (req) => {
       }
 
       // いいね状態の切り替え
-      if (reply.likeCount === undefined) {
-        reply.likeCount = 0;
-      }
-
       if (action === "add") {
         reply.likeCount++;
       } else if (action === "remove") {
@@ -371,6 +368,9 @@ Deno.serve(async (req) => {
           headers: { "Content-Type": "application/json" },
         });
       }
+
+      // 更新したスレッド内容をkvに保存
+      await kv.set(["thread", Number(threadId)], thread);
 
       return new Response(
         JSON.stringify({
