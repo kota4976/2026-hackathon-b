@@ -165,15 +165,16 @@ Deno.serve(async (req) => {
       });
     }
 
-    const threadListForCategory = threadList.get(Number(categoryId));
-    if (!threadListForCategory) {
+    // kvからカテゴリーIDに対応するスレッドリストを取得
+    const threadListResult = await kv.get(["category", Number(categoryId)]);
+    if (!threadListResult.value) {
       return new Response(JSON.stringify({ error: "Category not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify(threadListForCategory), {
+    return new Response(JSON.stringify(threadListResult.value), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
