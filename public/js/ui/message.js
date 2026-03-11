@@ -51,7 +51,7 @@ export const loadReplies = async (threadId) => {
         return;
     }
 
-    replies.forEach(reply => {
+    replies.forEach((reply, index) => {
         const isMine = reply.name === store.currentUser;
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${isMine ? 'mine' : ''}`;
@@ -71,9 +71,50 @@ export const loadReplies = async (threadId) => {
         bubbleDiv.className = 'message-bubble';
         bubbleDiv.textContent = reply.content;
         
+        // いいねボタン部分
+        const likeBtn = document.createElement('button');
+        likeBtn.className = 'reply-like-btn text-btn';
+        
+        const likedByMe = reply.likedBy && reply.likedBy.includes(store.currentUser);
+        if (likedByMe) {
+            likeBtn.classList.add('liked');
+        }
+
+        const likeCount = reply.likedBy ? reply.likedBy.length : 0;
+        likeBtn.innerHTML = `🔥 <span class="like-count">${likeCount > 0 ? likeCount : ''}</span>`;
+        
+        likeBtn.addEventListener('click', async () => {
+            if (!store.currentUser) return;
+            // 連打防止のため一時的に無効化
+            likeBtn.disabled = true;
+            try {
+                // api/thread.jsに追加したtoggleReplyLikeを呼び出す
+                const toggleReplyLike = (await import('../api/thread.js')).toggleReplyLike;
+                await toggleReplyLike(threadId, index, store.currentUser);
+                // 再描画して最新状態を反映
+                await loadReplies(threadId);
+            } catch (error) {
+                console.error("いいねの更新に失敗しました", error);
+                likeBtn.disabled = false;
+            }
+        });
+
+        const bubbleContainer = document.createElement('div');
+        bubbleContainer.style.display = 'flex';
+        bubbleContainer.style.alignItems = 'flex-end';
+        bubbleContainer.style.gap = '8px';
+
+        if (isMine) {
+            bubbleContainer.appendChild(likeBtn);
+            bubbleContainer.appendChild(bubbleDiv);
+        } else {
+            bubbleContainer.appendChild(bubbleDiv);
+            bubbleContainer.appendChild(likeBtn);
+        }
+        
         // 組み立て
         msgDiv.appendChild(headerDiv);
-        msgDiv.appendChild(bubbleDiv);
+        msgDiv.appendChild(bubbleContainer);
         
         replyList.appendChild(msgDiv);
     });
