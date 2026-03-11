@@ -37,6 +37,7 @@ type Thread = {
 type Reply = {
   name: string;
   content: string;
+  likedBy?: string[]; // いいねしたユーザーの名前の配列
 };
 
 const threadList = new Map<number, ThreadList>([
@@ -68,8 +69,8 @@ const threadContents = new Map<number, Thread>([
     title: "テスト1のタイトル",
     replyCount: 2,
     reply: [
-      { name: "ユーザー1", content: "テスト1の返信1" },
-      { name: "ユーザー2", content: "テスト1の返信2" },
+      { name: "ユーザー1", content: "テスト1の返信1", likedBy: [] },
+      { name: "ユーザー2", content: "テスト1の返信2", likedBy: [] },
     ],
   }],
   [2, {
@@ -78,8 +79,8 @@ const threadContents = new Map<number, Thread>([
     title: "テスト2のタイトル",
     replyCount: 2,
     reply: [
-      { name: "ユーザー3", content: "テスト2の返信1" },
-      { name: "ユーザー4", content: "テスト2の返信2" },
+      { name: "ユーザー3", content: "テスト2の返信1", likedBy: [] },
+      { name: "ユーザー4", content: "テスト2の返信2", likedBy: [] },
     ],
   }],
   [3, {
@@ -88,8 +89,8 @@ const threadContents = new Map<number, Thread>([
     title: "研究1のタイトル",
     replyCount: 2,
     reply: [
-      { name: "ユーザー5", content: "研究1の返信1" },
-      { name: "ユーザー6", content: "研究1の返信2" },
+      { name: "ユーザー5", content: "研究1の返信1", likedBy: [] },
+      { name: "ユーザー6", content: "研究1の返信2", likedBy: [] },
     ],
   }],
   [4, {
@@ -98,8 +99,8 @@ const threadContents = new Map<number, Thread>([
     title: "研究2のタイトル",
     replyCount: 2,
     reply: [
-      { name: "ユーザー7", content: "研究2の返信1" },
-      { name: "ユーザー8", content: "研究2の返信2" },
+      { name: "ユーザー7", content: "研究2の返信1", likedBy: [] },
+      { name: "ユーザー8", content: "研究2の返信2", likedBy: [] },
     ],
   }],
   [5, {
@@ -108,8 +109,8 @@ const threadContents = new Map<number, Thread>([
     title: "仕事1のタイトル",
     replyCount: 2,
     reply: [
-      { name: "ユーザー9", content: "仕事1の返信1" },
-      { name: "ユーザー10", content: "仕事1の返信2" },
+      { name: "ユーザー9", content: "仕事1の返信1", likedBy: [] },
+      { name: "ユーザー10", content: "仕事1の返信2", likedBy: [] },
     ],
   }],
   [6, {
@@ -118,8 +119,8 @@ const threadContents = new Map<number, Thread>([
     title: "仕事2のタイトル",
     replyCount: 2,
     reply: [
-      { name: "ユーザー11", content: "仕事2の返信1" },
-      { name: "ユーザー12", content: "仕事2の返信2" },
+      { name: "ユーザー11", content: "仕事2の返信1", likedBy: [] },
+      { name: "ユーザー12", content: "仕事2の返信2", likedBy: [] },
     ],
   }],
 ]);
@@ -256,7 +257,7 @@ Deno.serve(async (req) => {
     }
 
     // 返信を追加し、カウントをアップ
-    thread.reply.push({ name, content });
+    thread.reply.push({ name, content, likedBy: [] });
     thread.replyCount++;
 
     // サマリー側のカウントも更新
@@ -275,6 +276,63 @@ Deno.serve(async (req) => {
       }),
       { status: 200, headers: { "Content-Type": "application/json" } },
     );
+  }
+
+  // 返信へのいいね切り替え
+  if (req.method === "POST" && url.pathname === "/thread/reply/like") {
+    try {
+      const body = await req.json();
+      const { threadId, replyIndex, name } = body;
+
+      if (threadId === undefined || replyIndex === undefined || !name) {
+        return new Response(JSON.stringify({ error: "Missing fields" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      const thread = threadContents.get(Number(threadId));
+      if (!thread) {
+        return new Response(JSON.stringify({ error: "Thread not found" }), {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      const reply = thread.reply[Number(replyIndex)];
+      if (!reply) {
+        return new Response(JSON.stringify({ error: "Reply not found" }), {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      // いいね状態の切り替え
+      if (!reply.likedBy) {
+        reply.likedBy = [];
+      }
+      const userIndex = reply.likedBy.indexOf(name);
+      if (userIndex === -1) {
+        // いいねを追加
+        reply.likedBy.push(name);
+      } else {
+        // いいねを削除
+        reply.likedBy.splice(userIndex, 1);
+      }
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          likedBy: reply.likedBy,
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    } catch {
+      return new Response(JSON.stringify({ error: "Invalid JSON" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
   }
 
   return serveDir(req, {
