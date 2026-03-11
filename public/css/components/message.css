@@ -72,6 +72,38 @@
     transform: rotate(0.5deg);
 }
 
+/* いいね（🔥）ボタンのスタイル */
+.reply-like-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    color: #888;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    filter: grayscale(100%) opacity(0.7); /* 通常時はグレーアウト */
+}
+
+.reply-like-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    filter: grayscale(50%) opacity(0.9);
+}
+
+.reply-like-btn.liked {
+    filter: grayscale(0%) opacity(1); /* いいね済みはフルカラー */
+    color: #ff6b6b; /* カウントの文字色も少し赤っぽく */
+    background: rgba(255, 107, 107, 0.1); /* 薄い赤背景 */
+}
+
+.reply-like-btn .like-count {
+    font-size: 0.8rem;
+    min-width: 10px;
+}
+
 .reply-input-area {
     padding: 15px;
     border-top: 3px double #3a3a4a;
