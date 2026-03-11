@@ -34,10 +34,6 @@ type ThreadList = {
   threads: ThreadSummary[];
 };
 
-type Threads = {
-  threads: Thread[];
-};
-
 type Thread = {
   threadId: number;
   name: string;
