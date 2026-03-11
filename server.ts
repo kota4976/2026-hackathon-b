@@ -268,6 +268,51 @@ Deno.serve(async (req) => {
     }
   }
 
+  // スレッドの削除
+  if (req.method === "DELETE" && url.pathname === "/thread") {
+    const threadId = url.searchParams.get("threadId");
+    if (!threadId) {
+      return new Response(JSON.stringify({ error: "threadId is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const tid = Number(threadId);
+
+    // KVからスレッド詳細を削除
+    await kv.delete(["thread", tid]);
+
+    // サマリー（カテゴリー一覧）からもスレッドを除外して保存し直す
+    for (const category of categories) {
+      const categoryListResult = await kv.get([
+        "category",
+        category.categoryId,
+      ]);
+      if (!categoryListResult.value) continue;
+      
+      const categoryThreadList = categoryListResult.value as ThreadList;
+      // 削除対象のスレッドを探す
+      const originalLength = categoryThreadList.threads.length;
+      categoryThreadList.threads = categoryThreadList.threads.filter((t) => t.threadId !== tid);
+      
+      // もし該当スレッドが含まれていた（削除された）場合、アップデートして保存
+      if (categoryThreadList.threads.length < originalLength) {
+        await kv.set(["category", category.categoryId], categoryThreadList);
+        break; // 1つのスレッドは1つのカテゴリーにしか属さないため、一回見つけたら終了
+      }
+    }
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: "スレッドを削除しました",
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
+
   if (req.method === "POST" && url.pathname === "/thread/reply") {
     const threadId = url.searchParams.get("threadId");
     if (!threadId) {
