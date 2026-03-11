@@ -179,9 +179,13 @@ Deno.serve(async (req) => {
 
     // kvからカテゴリーIDに対応するスレッドリストを取得
     const threadListResult = await kv.get(["category", Number(categoryId)]);
+    // カテゴリーが見つからない場合は空のスレッドリストを返す
     if (!threadListResult.value) {
-      return new Response(JSON.stringify({ error: "Category not found" }), {
-        status: 404,
+      // kvを初期化して空のスレッドリストを保存する
+      const emptyThreadList: ThreadList = { threads: [] };
+      await kv.set(["category", Number(categoryId)], emptyThreadList);
+      return new Response(JSON.stringify({ threads: [] }), {
+        status: 200,
         headers: { "Content-Type": "application/json" },
       });
     }
