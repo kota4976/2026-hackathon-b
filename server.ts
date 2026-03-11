@@ -224,19 +224,34 @@ Deno.serve(async (req) => {
       }
 
       const newThreadId = Date.now(); // 簡易的にスレッドIDを生成
-      threadList.get(Number(categoryId))?.threads.push({
+      // kvに新しいスレッドを保存
+      const newThread: Thread = {
         threadId: newThreadId,
-        name: name,
-        title: title,
-        replyCount: 0,
-      });
-      threadContents.set(newThreadId, {
-        threadId: newThreadId,
-        name: name,
-        title: title,
+        name,
+        title,
         replyCount: 0,
         reply: [],
+      };
+      await kv.set(["thread", newThreadId], newThread);
+
+      // カテゴリーのスレッドリストを更新
+      // カテゴリーIDに対応するスレッドリストをkvから取得
+      const threadListResult = await kv.get(["category", Number(categoryId)]);
+      if (!threadListResult.value) {
+        return new Response(JSON.stringify({ error: "Category not found" }), {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      // 取得したスレッドリストに新しいスレッドを追加して保存
+      const categoryThreadList = threadListResult.value as ThreadList;
+      categoryThreadList.threads.push({
+        threadId: newThreadId,
+        name,
+        title,
+        replyCount: 0,
       });
+      await kv.set(["category", Number(categoryId)], categoryThreadList);
 
       return new Response(
         JSON.stringify({
