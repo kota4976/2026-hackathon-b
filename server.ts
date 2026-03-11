@@ -286,18 +286,21 @@ Deno.serve(async (req) => {
       );
     }
 
-    const thread = threadContents.get(Number(threadId));
-    // スレッドが存在しない場合はエラーを返す
-    if (!thread) {
+    // kvに返信内容を保存
+    const threadContentResult = await kv.get(["thread", Number(threadId)]);
+    if (!threadContentResult.value) {
       return new Response(JSON.stringify({ error: "Thread not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    // 返信を追加し、カウントをアップ
+    const thread = threadContentResult.value as Thread;
     thread.reply.push({ name, content, likeCount: 0 });
     thread.replyCount++;
+
+    // 更新したスレッド内容をkvに保存
+    await kv.set(["thread", Number(threadId)], thread);
 
     // サマリー側のカウントも更新
     for (const categoryThreads of threadList.values()) {
@@ -308,6 +311,11 @@ Deno.serve(async (req) => {
         summary.replyCount++;
         break;
       }
+    }
+
+    // カテゴリーのスレッドリストをkvに保存
+    for (const [categoryId, categoryThreadList] of threadList.entries()) {
+      await kv.set(["category", categoryId], categoryThreadList);
     }
 
     return new Response(
