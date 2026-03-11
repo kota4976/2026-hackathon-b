@@ -302,20 +302,22 @@ Deno.serve(async (req) => {
     // 更新したスレッド内容をkvに保存
     await kv.set(["thread", Number(threadId)], thread);
 
-    // サマリー側のカウントも更新
-    for (const categoryThreads of threadList.values()) {
-      const summary = categoryThreads.threads.find((t) =>
+    // サマリー側のカウントも更新 (kvから直接読み書きする)
+    for (const category of categories) {
+      const categoryListResult = await kv.get([
+        "category",
+        category.categoryId,
+      ]);
+      if (!categoryListResult.value) continue;
+      const categoryThreadList = categoryListResult.value as ThreadList;
+      const summary = categoryThreadList.threads.find((t) =>
         t.threadId === Number(threadId)
       );
       if (summary) {
         summary.replyCount++;
+        await kv.set(["category", category.categoryId], categoryThreadList);
         break;
       }
-    }
-
-    // カテゴリーのスレッドリストをkvに保存
-    for (const [categoryId, categoryThreadList] of threadList.entries()) {
-      await kv.set(["category", categoryId], categoryThreadList);
     }
 
     return new Response(
