@@ -192,15 +192,16 @@ Deno.serve(async (req) => {
       });
     }
 
-    const threadContent = threadContents.get(Number(threadId));
-    if (!threadContent) {
+    // kvからスレッドIDに対応するスレッド内容を取得
+    const threadContentResult = await kv.get(["thread", Number(threadId)]);
+    if (!threadContentResult.value) {
       return new Response(JSON.stringify({ error: "Thread not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify(threadContent), {
+    return new Response(JSON.stringify(threadContentResult.value), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
