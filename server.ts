@@ -43,8 +43,18 @@ type Reply = {
 const threadList = new Map<number, ThreadList>([
   [1, {
     threads: [
-      { threadId: 1, name: "テスト1", title: "テスト1のタイトル", replyCount: 2 },
-      { threadId: 2, name: "テスト2", title: "テスト2のタイトル", replyCount: 2 },
+      {
+        threadId: 1,
+        name: "テスト1",
+        title: "テスト1のタイトル",
+        replyCount: 2,
+      },
+      {
+        threadId: 2,
+        name: "テスト2",
+        title: "テスト2のタイトル",
+        replyCount: 2,
+      },
     ],
   }],
   [2, {
@@ -262,7 +272,9 @@ Deno.serve(async (req) => {
 
     // サマリー側のカウントも更新
     for (const categoryThreads of threadList.values()) {
-      const summary = categoryThreads.threads.find(t => t.threadId === Number(threadId));
+      const summary = categoryThreads.threads.find((t) =>
+        t.threadId === Number(threadId)
+      );
       if (summary) {
         summary.replyCount++;
         break;
@@ -311,7 +323,7 @@ Deno.serve(async (req) => {
       if (reply.likeCount === undefined) {
         reply.likeCount = 0;
       }
-      
+
       if (action === "add") {
         reply.likeCount++;
       } else if (action === "remove") {
