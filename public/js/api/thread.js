@@ -87,3 +87,20 @@ export const toggleReplyLike = async (threadId, replyIndex, action) => {
         throw error;
     }
 };
+
+export const deleteThread = async (threadId) => {
+    try {
+        const response = await fetch(`/thread?threadId=${threadId}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("スレッドの削除に失敗しました:", error);
+        throw error;
+    }
+};
