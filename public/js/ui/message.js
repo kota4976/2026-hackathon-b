@@ -2,19 +2,13 @@ import * as store from '../store.js';
 import { loadThreads } from './thread.js';
 import { fetchThreadContents, postReply } from '../api/thread.js';
 
-let threadDetailContainer,
-  emptyStateDetail,
-  detailThreadTitle,
-  detailThreadAuthor,
-  replyList,
-  replyForm,
-  replyContent;
+let threadDetailContainer, emptyStateDetail, detailThreadTitle, detailThreadAuthor, replyList, replyForm, replyContent;
 
 export const clearThreadDetail = () => {
-  store.setCurrentThread(null);
-  threadDetailContainer.classList.add("hidden");
-  emptyStateDetail.classList.remove("hidden");
-  if (replyList) replyList.style.backgroundColor = '';
+    store.setCurrentThread(null);
+    threadDetailContainer.classList.add('hidden');
+    emptyStateDetail.classList.remove('hidden');
+    if (replyList) replyList.style.backgroundColor = '';
 };
 
 export const showThreadDetail = async (thread) => {
@@ -34,7 +28,7 @@ export const loadReplies = async (threadId) => {
     try {
         const threadData = await fetchThreadContents(threadId);
         replies = threadData.reply || [];
-    } catch (error) {
+    } catch (_error) {
         const errorDiv = document.createElement('div');
         errorDiv.className = 'empty-state';
         errorDiv.style.marginTop = '20px';
@@ -47,54 +41,80 @@ export const loadReplies = async (threadId) => {
     // 背景色は固定（CSSに従う）
     replyList.style.backgroundColor = '';
 
+
     if (replies.length === 0) {
-        const emptyDiv = document.createElement("div");
-        emptyDiv.className = "empty-state";
-        emptyDiv.style.marginTop = "20px";
-        emptyDiv.textContent = "まだ返信がありません。最初の返信をしよう！";
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'empty-state';
+        emptyDiv.style.marginTop = '20px';
+        emptyDiv.textContent = 'まだ返信がありません。最初の返信をしよう！';
         replyList.appendChild(emptyDiv);
         return;
     }
 
-    replies.forEach((reply) => {
+    replies.forEach(reply => {
         const isMine = reply.name === store.currentUser;
-        const msgDiv = document.createElement("div");
-        msgDiv.className = `message ${isMine ? "mine" : ""}`;
-
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${isMine ? 'mine' : ''}`;
+        
         // ヘッダー部分
-        const headerDiv = document.createElement("div");
-        headerDiv.className = "message-header";
-
-        const authorSpan = document.createElement("span");
-        authorSpan.className = "message-author";
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'message-header';
+        
+        const authorSpan = document.createElement('span');
+        authorSpan.className = 'message-author';
         authorSpan.textContent = reply.name;
-
+        
         headerDiv.appendChild(authorSpan);
-
+        
         // 本文部分
-        const bubbleDiv = document.createElement("div");
-        bubbleDiv.className = "message-bubble";
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'message-bubble';
         bubbleDiv.textContent = reply.content;
-
+        
         // 組み立て
         msgDiv.appendChild(headerDiv);
         msgDiv.appendChild(bubbleDiv);
-
+        
         replyList.appendChild(msgDiv);
     });
 
     // 最下部へスクロール
     replyList.scrollTop = replyList.scrollHeight;
+
+    // リプライが20件以上の場合、ペインを切り離すアニメーションを実行
+    if (replies.length >= 20) {
+        threadDetailContainer.classList.add('cut-off-anim');
+        const resizer2 = document.getElementById('resizer-2');
+        if (resizer2) resizer2.classList.add('cutting');
+        
+        // アニメーション完了後に画面をクリアし、クラスも外す
+        setTimeout(() => {
+            clearThreadDetail();
+            threadDetailContainer.classList.remove('cut-off-anim');
+            if (resizer2) resizer2.classList.remove('cutting');
+            
+            // スレッド一覧から現在選択中のスレッドのactive状態も解除する
+            const activeThread = document.querySelector('.thread-item.active');
+            if (activeThread) {
+                activeThread.classList.remove('active');
+            }
+        }, 3000); // CSSのanimation durationと合わせる
+    } else {
+        // 通常はアニメーションを解除しておく
+        threadDetailContainer.classList.remove('cut-off-anim');
+        const resizer2 = document.getElementById('resizer-2');
+        if (resizer2) resizer2.classList.remove('cutting');
+    }
 };
 
 export const initMessageFeature = () => {
-    threadDetailContainer = document.getElementById("thread-detail-container");
-    emptyStateDetail = document.getElementById("empty-state-detail");
-    detailThreadTitle = document.getElementById("detail-thread-title");
-    detailThreadAuthor = document.getElementById("detail-thread-author");
-    replyList = document.getElementById("reply-list");
-    replyForm = document.getElementById("replyForm");
-    replyContent = document.getElementById("reply-content");
+    threadDetailContainer = document.getElementById('thread-detail-container');
+    emptyStateDetail = document.getElementById('empty-state-detail');
+    detailThreadTitle = document.getElementById('detail-thread-title');
+    detailThreadAuthor = document.getElementById('detail-thread-author');
+    replyList = document.getElementById('reply-list');
+    replyForm = document.getElementById('replyForm');
+    replyContent = document.getElementById('reply-content');
 
     // リプライ送信
     replyForm.addEventListener('submit', async (e) => {
@@ -106,7 +126,7 @@ export const initMessageFeature = () => {
 
         try {
             await postReply(store.currentThreadId, { name: store.currentUser, content });
-        } catch (error) {
+        } catch (_error) {
             alert('リプライの送信に失敗しました。');
             return;
         }
@@ -116,7 +136,15 @@ export const initMessageFeature = () => {
         // 再描画
         await loadReplies(store.currentThreadId);
         
-        // 選択状態を維持
-        document.querySelector(`.thread-item[data-id="${store.currentThreadId}"]`)?.classList.add('active');
+        // 最新のスレッド一覧も再描画してリプライ数を更新
+        // その際、右画面がクリアされないように第2引数にtrueを渡す
+        if (store.currentCategoryId) {
+            await loadThreads(store.currentCategoryId, true);
+        }
+        
+        // 選択状態を再付与 (再描画によってDOMが書き換わるため)
+        setTimeout(() => {
+            document.querySelector(`.thread-item[data-id="${store.currentThreadId}"]`)?.classList.add('active');
+        }, 50);
     });
 };
