@@ -97,10 +97,18 @@ export const initMessageFeature = () => {
     replyContent = document.getElementById("reply-content");
 
     replyContent.addEventListener('input', () => {
+        if (replyContent.value.length > 100) {
+            replyContent.value = replyContent.value.slice(0, 100);
+        }
         const length = replyContent.value.length;
         const counter = document.getElementById("reply-content-counter");
         if (counter) {
             counter.textContent = `${length}/100`;
+            if (length >= 100) {
+                counter.classList.add('limit-exceeded');
+            } else {
+                counter.classList.remove('limit-exceeded');
+            }
         }
     });
 

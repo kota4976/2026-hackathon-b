@@ -111,7 +111,7 @@ label {
 }
 
 .input-with-counter input {
-  padding-right: 45px; /* カウンタのスペースを確保 */
+  padding-right: 60px; /* カウンタのスペースを確保（少し広めに） */
   margin-bottom: 0 !important; /* コンテナ側にマージンを持たせるためリセット */
 }
 
@@ -119,8 +119,13 @@ label {
   position: absolute;
   right: 12px;
   top: 50%;
-  transform: translateY(-10%); /* ユーザー指定の「真ん中より下」の位置 */
+  transform: translateY(-50%); /* 中央配置に修正 */
   font-size: 0.75rem;
   color: #888;
   pointer-events: none; /* 入力の邪魔にならないように */
+}
+
+.character-counter.limit-exceeded {
+  color: #ff4d4f;
+  font-weight: bold;
 }

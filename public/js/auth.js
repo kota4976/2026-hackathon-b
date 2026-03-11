@@ -6,10 +6,18 @@ export const initAuth = () => {
   const logoutBtn = document.getElementById("logout-btn");
 
   usernameInput.addEventListener("input", () => {
+    if (usernameInput.value.length > 20) {
+      usernameInput.value = usernameInput.value.slice(0, 20);
+    }
     const length = usernameInput.value.length;
     const counter = document.getElementById("username-counter");
     if (counter) {
       counter.textContent = `${length}/20`;
+      if (length >= 20) {
+        counter.classList.add("limit-exceeded");
+      } else {
+        counter.classList.remove("limit-exceeded");
+      }
     }
   });
 
