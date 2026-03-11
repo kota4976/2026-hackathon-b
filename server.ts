@@ -9,6 +9,18 @@ const categories: Category[] = [
   { categoryId: 1, name: "テスト" },
   { categoryId: 2, name: "研究" },
   { categoryId: 3, name: "仕事" },
+  { categoryId: 4, name: "趣味" },
+  { categoryId: 5, name: "スポーツ" },
+  { categoryId: 6, name: "税金" },
+  { categoryId: 7, name: "政治" },
+  { categoryId: 8, name: "経済" },
+  { categoryId: 9, name: "社会" },
+  { categoryId: 10, name: "日常" },
+  { categoryId: 11, name: "健康" },
+  { categoryId: 12, name: "学校" },
+  { categoryId: 13, name: "恋愛" },
+  { categoryId: 14, name: "人間関係" },
+  { categoryId: 15, name: "その他" },
 ];
 
 type ThreadSummary = {
@@ -20,10 +32,6 @@ type ThreadSummary = {
 
 type ThreadList = {
   threads: ThreadSummary[];
-};
-
-type Threads = {
-  threads: Thread[];
 };
 
 type Thread = {
@@ -40,112 +48,7 @@ type Reply = {
   likeCount: number; // いいねの数
 };
 
-const threadList = new Map<number, ThreadList>([
-  [1, {
-    threads: [
-      {
-        threadId: 1,
-        name: "テスト1",
-        title: "テスト1のタイトル",
-        replyCount: 2,
-      },
-      {
-        threadId: 2,
-        name: "テスト2",
-        title: "テスト2のタイトル",
-        replyCount: 2,
-      },
-    ],
-  }],
-  [2, {
-    threads: [
-      { threadId: 3, name: "研究1", title: "研究1のタイトル", replyCount: 2 },
-      { threadId: 4, name: "研究2", title: "研究2のタイトル", replyCount: 2 },
-    ],
-  }],
-  [3, {
-    threads: [
-      { threadId: 5, name: "仕事1", title: "仕事1のタイトル", replyCount: 2 },
-      { threadId: 6, name: "仕事2", title: "仕事2のタイトル", replyCount: 2 },
-    ],
-  }],
-]);
-
-// スレッドIDごとの内容を管理するMap
-const threadContents = new Map<number, Thread>([
-  [1, {
-    threadId: 1,
-    name: "テスト1",
-    title: "テスト1のタイトル",
-    replyCount: 2,
-    reply: [
-      { name: "ユーザー1", content: "テスト1の返信1", likeCount: 0 },
-      { name: "ユーザー2", content: "テスト1の返信2", likeCount: 0 },
-    ],
-  }],
-  [2, {
-    threadId: 2,
-    name: "テスト2",
-    title: "テスト2のタイトル",
-    replyCount: 2,
-    reply: [
-      { name: "ユーザー3", content: "テスト2の返信1", likeCount: 0 },
-      { name: "ユーザー4", content: "テスト2の返信2", likeCount: 0 },
-    ],
-  }],
-  [3, {
-    threadId: 3,
-    name: "研究1",
-    title: "研究1のタイトル",
-    replyCount: 2,
-    reply: [
-      { name: "ユーザー5", content: "研究1の返信1", likeCount: 0 },
-      { name: "ユーザー6", content: "研究1の返信2", likeCount: 0 },
-    ],
-  }],
-  [4, {
-    threadId: 4,
-    name: "研究2",
-    title: "研究2のタイトル",
-    replyCount: 2,
-    reply: [
-      { name: "ユーザー7", content: "研究2の返信1", likeCount: 0 },
-      { name: "ユーザー8", content: "研究2の返信2", likeCount: 0 },
-    ],
-  }],
-  [5, {
-    threadId: 5,
-    name: "仕事1",
-    title: "仕事1のタイトル",
-    replyCount: 2,
-    reply: [
-      { name: "ユーザー9", content: "仕事1の返信1", likeCount: 0 },
-      { name: "ユーザー10", content: "仕事1の返信2", likeCount: 0 },
-    ],
-  }],
-  [6, {
-    threadId: 6,
-    name: "仕事2",
-    title: "仕事2のタイトル",
-    replyCount: 2,
-    reply: [
-      { name: "ユーザー11", content: "仕事2の返信1", likeCount: 0 },
-      { name: "ユーザー12", content: "仕事2の返信2", likeCount: 0 },
-    ],
-  }],
-]);
-
 const kv = await Deno.openKv();
-
-// カテゴリーごとにスレッドリストをkvに保存
-for (const [categoryId, threadListData] of threadList.entries()) {
-  await kv.set(["category", categoryId], threadListData);
-}
-
-// スレッドIDごとにスレッド内容をkvに保存
-for (const [threadId, threadContent] of threadContents.entries()) {
-  await kv.set(["thread", threadId], threadContent);
-}
 
 Deno.serve(async (req) => {
   const url = new URL(req.url);
@@ -167,9 +70,13 @@ Deno.serve(async (req) => {
 
     // kvからカテゴリーIDに対応するスレッドリストを取得
     const threadListResult = await kv.get(["category", Number(categoryId)]);
+    // カテゴリーが見つからない場合は空のスレッドリストを返す
     if (!threadListResult.value) {
-      return new Response(JSON.stringify({ error: "Category not found" }), {
-        status: 404,
+      // kvを初期化して空のスレッドリストを保存する
+      const emptyThreadList: ThreadList = { threads: [] };
+      await kv.set(["category", Number(categoryId)], emptyThreadList);
+      return new Response(JSON.stringify({ threads: [] }), {
+        status: 200,
         headers: { "Content-Type": "application/json" },
       });
     }
