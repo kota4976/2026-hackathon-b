@@ -105,6 +105,11 @@ label {
   text-align: center;
 }
 /*検索機能*/
+.search-box {
+  flex-grow: 1; /* ヘッダー内の余っているスペースをすべて吸収して広がる */
+  display: flex;
+  justify-content: flex-end; /* 検索窓を右寄せにしたい場合はこれを追加 */
+}
 .pane-header {
   display: flex;
   align-items: center;
