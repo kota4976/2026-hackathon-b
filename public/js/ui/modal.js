@@ -10,6 +10,8 @@ export const initModalFeature = () => {
     const createThreadForm = document.getElementById('createThreadForm');
     const threadCategorySelect = document.getElementById('thread-category');
 
+    const threadTitleInput = document.getElementById('thread-title');
+
     const openModal = () => {
         createThreadModal.classList.remove('hidden');
         if (store.currentCategoryId) {
@@ -20,7 +22,28 @@ export const initModalFeature = () => {
     const closeModal = () => {
         createThreadModal.classList.add('hidden');
         createThreadForm.reset();
+        const counter = document.getElementById('thread-title-counter');
+        if (counter) counter.textContent = '0/100';
     };
+
+    threadTitleInput.addEventListener('input', () => {
+        if (threadTitleInput.value.length > 100) {
+            threadTitleInput.value = threadTitleInput.value.slice(0, 100);
+        }
+        const length = threadTitleInput.value.length;
+        const counter = document.getElementById('thread-title-counter');
+        if (counter) {
+            counter.textContent = `${length}/100`;
+            // 常に上限以下になるため、以前追加したlimit-exceededクラスの制御は不要になるが一応残すか、削除する
+            // ユーザーは「100文字までにしたい」と言っているので、赤文字にする必要もなくなるかもしれないが
+            // 念の為、上限に達したことを示すスタイルとして残す
+            if (length >= 100) {
+                counter.classList.add('limit-exceeded');
+            } else {
+                counter.classList.remove('limit-exceeded');
+            }
+        }
+    });
 
     createThreadBtn.addEventListener('click', openModal);
     closeModalBtn.addEventListener('click', closeModal);
