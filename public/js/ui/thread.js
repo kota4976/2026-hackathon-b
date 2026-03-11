@@ -2,12 +2,14 @@ import * as store from "../store.js";
 import { clearThreadDetail, showThreadDetail } from "./message.js";
 import { fetchThreads } from "../api/thread.js";
 
-export const loadThreads = async (categoryId) => {
+export const loadThreads = async (categoryId, preserveDetailState = false) => {
   const threadList = document.getElementById("thread-list");
   threadList.innerHTML = "";
 
-  // スレッド詳細画面はカテゴリ切り替えで常にクリア
-  clearThreadDetail();
+  // スレッド詳細画面はカテゴリ切り替えで常にクリアするが、リプライ時は維持する
+  if (!preserveDetailState) {
+    clearThreadDetail();
+  }
 
   try {
     const filteredThreads = await fetchThreads(categoryId);
@@ -32,12 +34,29 @@ export const loadThreads = async (categoryId) => {
       titleDiv.className = "thread-item-title";
       titleDiv.textContent = thread.title;
 
+      // 10を超えたらバッジを表示
+      if (thread.replyCount > 10) {
+        const badgeSpan = document.createElement("span");
+        badgeSpan.className = "hot-badge";
+        badgeSpan.textContent = "🔥";
+        div.appendChild(badgeSpan);
+      }
+
       // メタ情報 (投稿者名など)
       const metaDiv = document.createElement("div");
       metaDiv.className = "thread-item-meta";
+      
       const authorSpan = document.createElement("span");
       authorSpan.textContent = thread.name;
+      
+      const countSpan = document.createElement('span');
+      countSpan.className = 'reply-count';
+      countSpan.textContent = `リプライ: ${thread.replyCount}`;
+      countSpan.style.marginLeft = '10px';
+      countSpan.style.color = '#ff6b6b';
+
       metaDiv.appendChild(authorSpan);
+      metaDiv.appendChild(countSpan);
 
       // 組み立て
       div.appendChild(titleDiv);

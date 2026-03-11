@@ -15,6 +15,7 @@ type ThreadSummary = {
   threadId: number;
   name: string;
   title: string;
+  replyCount: number;
 };
 
 type ThreadList = {
@@ -29,6 +30,7 @@ type Thread = {
   threadId: number;
   name: string;
   title: string;
+  replyCount: number;
   reply: Reply[];
 };
 
@@ -40,20 +42,20 @@ type Reply = {
 const threadList = new Map<number, ThreadList>([
   [1, {
     threads: [
-      { threadId: 1, name: "テスト1", title: "テスト1のタイトル" },
-      { threadId: 2, name: "テスト2", title: "テスト2のタイトル" },
+      { threadId: 1, name: "テスト1", title: "テスト1のタイトル", replyCount: 2 },
+      { threadId: 2, name: "テスト2", title: "テスト2のタイトル", replyCount: 2 },
     ],
   }],
   [2, {
     threads: [
-      { threadId: 3, name: "研究1", title: "研究1のタイトル" },
-      { threadId: 4, name: "研究2", title: "研究2のタイトル" },
+      { threadId: 3, name: "研究1", title: "研究1のタイトル", replyCount: 2 },
+      { threadId: 4, name: "研究2", title: "研究2のタイトル", replyCount: 2 },
     ],
   }],
   [3, {
     threads: [
-      { threadId: 5, name: "仕事1", title: "仕事1のタイトル" },
-      { threadId: 6, name: "仕事2", title: "仕事2のタイトル" },
+      { threadId: 5, name: "仕事1", title: "仕事1のタイトル", replyCount: 2 },
+      { threadId: 6, name: "仕事2", title: "仕事2のタイトル", replyCount: 2 },
     ],
   }],
 ]);
@@ -64,6 +66,7 @@ const threadContents = new Map<number, Thread>([
     threadId: 1,
     name: "テスト1",
     title: "テスト1のタイトル",
+    replyCount: 2,
     reply: [
       { name: "ユーザー1", content: "テスト1の返信1" },
       { name: "ユーザー2", content: "テスト1の返信2" },
@@ -73,6 +76,7 @@ const threadContents = new Map<number, Thread>([
     threadId: 2,
     name: "テスト2",
     title: "テスト2のタイトル",
+    replyCount: 2,
     reply: [
       { name: "ユーザー3", content: "テスト2の返信1" },
       { name: "ユーザー4", content: "テスト2の返信2" },
@@ -82,6 +86,7 @@ const threadContents = new Map<number, Thread>([
     threadId: 3,
     name: "研究1",
     title: "研究1のタイトル",
+    replyCount: 2,
     reply: [
       { name: "ユーザー5", content: "研究1の返信1" },
       { name: "ユーザー6", content: "研究1の返信2" },
@@ -91,6 +96,7 @@ const threadContents = new Map<number, Thread>([
     threadId: 4,
     name: "研究2",
     title: "研究2のタイトル",
+    replyCount: 2,
     reply: [
       { name: "ユーザー7", content: "研究2の返信1" },
       { name: "ユーザー8", content: "研究2の返信2" },
@@ -100,6 +106,7 @@ const threadContents = new Map<number, Thread>([
     threadId: 5,
     name: "仕事1",
     title: "仕事1のタイトル",
+    replyCount: 2,
     reply: [
       { name: "ユーザー9", content: "仕事1の返信1" },
       { name: "ユーザー10", content: "仕事1の返信2" },
@@ -109,6 +116,7 @@ const threadContents = new Map<number, Thread>([
     threadId: 6,
     name: "仕事2",
     title: "仕事2のタイトル",
+    replyCount: 2,
     reply: [
       { name: "ユーザー11", content: "仕事2の返信1" },
       { name: "ユーザー12", content: "仕事2の返信2" },
@@ -195,11 +203,13 @@ Deno.serve(async (req) => {
         threadId: newThreadId,
         name: name,
         title: title,
+        replyCount: 0,
       });
       threadContents.set(newThreadId, {
         threadId: newThreadId,
         name: name,
         title: title,
+        replyCount: 0,
         reply: [],
       });
 
@@ -245,7 +255,18 @@ Deno.serve(async (req) => {
       });
     }
 
+    // 返信を追加し、カウントをアップ
     thread.reply.push({ name, content });
+    thread.replyCount++;
+
+    // サマリー側のカウントも更新
+    for (const categoryThreads of threadList.values()) {
+      const summary = categoryThreads.threads.find(t => t.threadId === Number(threadId));
+      if (summary) {
+        summary.replyCount++;
+        break;
+      }
+    }
 
     return new Response(
       JSON.stringify({
