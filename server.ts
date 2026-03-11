@@ -43,8 +43,18 @@ type Reply = {
 const threadList = new Map<number, ThreadList>([
   [1, {
     threads: [
-      { threadId: 1, name: "テスト1", title: "テスト1のタイトル", replyCount: 2 },
-      { threadId: 2, name: "テスト2", title: "テスト2のタイトル", replyCount: 2 },
+      {
+        threadId: 1,
+        name: "テスト1",
+        title: "テスト1のタイトル",
+        replyCount: 2,
+      },
+      {
+        threadId: 2,
+        name: "テスト2",
+        title: "テスト2のタイトル",
+        replyCount: 2,
+      },
     ],
   }],
   [2, {
@@ -125,6 +135,18 @@ const threadContents = new Map<number, Thread>([
   }],
 ]);
 
+const kv = await Deno.openKv();
+
+// カテゴリーごとにスレッドリストをkvに保存
+for (const [categoryId, threadListData] of threadList.entries()) {
+  await kv.set(["category", categoryId], threadListData);
+}
+
+// スレッドIDごとにスレッド内容をkvに保存
+for (const [threadId, threadContent] of threadContents.entries()) {
+  await kv.set(["thread", threadId], threadContent);
+}
+
 Deno.serve(async (req) => {
   const url = new URL(req.url);
 
@@ -143,15 +165,16 @@ Deno.serve(async (req) => {
       });
     }
 
-    const threadListForCategory = threadList.get(Number(categoryId));
-    if (!threadListForCategory) {
+    // kvからカテゴリーIDに対応するスレッドリストを取得
+    const threadListResult = await kv.get(["category", Number(categoryId)]);
+    if (!threadListResult.value) {
       return new Response(JSON.stringify({ error: "Category not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify(threadListForCategory), {
+    return new Response(JSON.stringify(threadListResult.value), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -169,15 +192,16 @@ Deno.serve(async (req) => {
       });
     }
 
-    const threadContent = threadContents.get(Number(threadId));
-    if (!threadContent) {
+    // kvからスレッドIDに対応するスレッド内容を取得
+    const threadContentResult = await kv.get(["thread", Number(threadId)]);
+    if (!threadContentResult.value) {
       return new Response(JSON.stringify({ error: "Thread not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify(threadContent), {
+    return new Response(JSON.stringify(threadContentResult.value), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -200,19 +224,34 @@ Deno.serve(async (req) => {
       }
 
       const newThreadId = Date.now(); // 簡易的にスレッドIDを生成
-      threadList.get(Number(categoryId))?.threads.push({
+      // kvに新しいスレッドを保存
+      const newThread: Thread = {
         threadId: newThreadId,
-        name: name,
-        title: title,
-        replyCount: 0,
-      });
-      threadContents.set(newThreadId, {
-        threadId: newThreadId,
-        name: name,
-        title: title,
+        name,
+        title,
         replyCount: 0,
         reply: [],
+      };
+      await kv.set(["thread", newThreadId], newThread);
+
+      // カテゴリーのスレッドリストを更新
+      // カテゴリーIDに対応するスレッドリストをkvから取得
+      const threadListResult = await kv.get(["category", Number(categoryId)]);
+      if (!threadListResult.value) {
+        return new Response(JSON.stringify({ error: "Category not found" }), {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      // 取得したスレッドリストに新しいスレッドを追加して保存
+      const categoryThreadList = threadListResult.value as ThreadList;
+      categoryThreadList.threads.push({
+        threadId: newThreadId,
+        name,
+        title,
+        replyCount: 0,
       });
+      await kv.set(["category", Number(categoryId)], categoryThreadList);
 
       return new Response(
         JSON.stringify({
@@ -247,24 +286,36 @@ Deno.serve(async (req) => {
       );
     }
 
-    const thread = threadContents.get(Number(threadId));
-    // スレッドが存在しない場合はエラーを返す
-    if (!thread) {
+    // kvに返信内容を保存
+    const threadContentResult = await kv.get(["thread", Number(threadId)]);
+    if (!threadContentResult.value) {
       return new Response(JSON.stringify({ error: "Thread not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    // 返信を追加し、カウントをアップ
+    const thread = threadContentResult.value as Thread;
     thread.reply.push({ name, content, likeCount: 0 });
     thread.replyCount++;
 
-    // サマリー側のカウントも更新
-    for (const categoryThreads of threadList.values()) {
-      const summary = categoryThreads.threads.find(t => t.threadId === Number(threadId));
+    // 更新したスレッド内容をkvに保存
+    await kv.set(["thread", Number(threadId)], thread);
+
+    // サマリー側のカウントも更新 (kvから直接読み書きする)
+    for (const category of categories) {
+      const categoryListResult = await kv.get([
+        "category",
+        category.categoryId,
+      ]);
+      if (!categoryListResult.value) continue;
+      const categoryThreadList = categoryListResult.value as ThreadList;
+      const summary = categoryThreadList.threads.find((t) =>
+        t.threadId === Number(threadId)
+      );
       if (summary) {
         summary.replyCount++;
+        await kv.set(["category", category.categoryId], categoryThreadList);
         break;
       }
     }
@@ -291,14 +342,15 @@ Deno.serve(async (req) => {
         });
       }
 
-      const thread = threadContents.get(Number(threadId));
-      if (!thread) {
+      // いいねの切り替えは、スレッド内容をkvから取得して行う
+      const threadContentResult = await kv.get(["thread", Number(threadId)]);
+      if (!threadContentResult.value) {
         return new Response(JSON.stringify({ error: "Thread not found" }), {
           status: 404,
           headers: { "Content-Type": "application/json" },
         });
       }
-
+      const thread = threadContentResult.value as Thread;
       const reply = thread.reply[Number(replyIndex)];
       if (!reply) {
         return new Response(JSON.stringify({ error: "Reply not found" }), {
@@ -308,10 +360,6 @@ Deno.serve(async (req) => {
       }
 
       // いいね状態の切り替え
-      if (reply.likeCount === undefined) {
-        reply.likeCount = 0;
-      }
-      
       if (action === "add") {
         reply.likeCount++;
       } else if (action === "remove") {
@@ -322,6 +370,9 @@ Deno.serve(async (req) => {
           headers: { "Content-Type": "application/json" },
         });
       }
+
+      // 更新したスレッド内容をkvに保存
+      await kv.set(["thread", Number(threadId)], thread);
 
       return new Response(
         JSON.stringify({
