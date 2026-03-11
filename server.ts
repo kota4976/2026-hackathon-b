@@ -135,6 +135,18 @@ const threadContents = new Map<number, Thread>([
   }],
 ]);
 
+const kv = await Deno.openKv();
+
+// カテゴリーごとにスレッドリストをkvに保存
+for (const [categoryId, threadListData] of threadList.entries()) {
+  await kv.set(["category", categoryId], threadListData);
+}
+
+// スレッドIDごとにスレッド内容をkvに保存
+for (const [threadId, threadContent] of threadContents.entries()) {
+  await kv.set(["thread", threadId], threadContent);
+}
+
 Deno.serve(async (req) => {
   const url = new URL(req.url);
 
