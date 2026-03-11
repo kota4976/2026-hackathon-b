@@ -9,6 +9,18 @@ const categories: Category[] = [
   { categoryId: 1, name: "テスト" },
   { categoryId: 2, name: "研究" },
   { categoryId: 3, name: "仕事" },
+  { categoryId: 4, name: "趣味" },
+  { categoryId: 5, name: "スポーツ" },
+  { categoryId: 6, name: "税金" },
+  { categoryId: 7, name: "政治" },
+  { categoryId: 8, name: "経済" },
+  { categoryId: 9, name: "社会" },
+  { categoryId: 10, name: "日常" },
+  { categoryId: 11, name: "健康" },
+  { categoryId: 12, name: "学校" },
+  { categoryId: 13, name: "恋愛" },
+  { categoryId: 14, name: "人間関係" },
+  { categoryId: 15, name: "その他" },
 ];
 
 type ThreadSummary = {
