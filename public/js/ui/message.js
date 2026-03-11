@@ -127,26 +127,25 @@ export const loadReplies = async (threadId) => {
     // 最下部へスクロール
     replyList.scrollTop = replyList.scrollHeight;
 
-    // リプライが20件以上の場合、サーバーからスレッドを削除しGSAPを使った燃焼アニメーションを実行
+    // リプライが20件以上の場合、GSAPを使った燃焼アニメーションを実行し、終わったらサーバーからスレッドを削除
     if (replies.length >= 20) {
         // 同時に操作されないようフォーム等を一時無効化
         threadDetailContainer.style.pointerEvents = 'none';
         
-        try {
-            // 対象のスレッドをKVから完全に削除する
-            await deleteThread(threadId);
-            
-            // 左側のスレッド一覧を再取得（消えたことを反映）
-            if (store.currentCategoryId) {
-                await loadThreads(store.currentCategoryId, true);
-            }
-        } catch (e) {
-            console.error("20件到達時のスレッド削除に失敗しました", e);
-            // 削除失敗時もアニメーションは一応見せる
-        }
-
         const { playBurnAnimation } = await import('./effects.js');
-        playBurnAnimation(threadDetailContainer, () => {
+        playBurnAnimation(threadDetailContainer, async () => {
+            try {
+                // 対象のスレッドをKVから完全に削除する
+                await deleteThread(threadId);
+                
+                // 左側のスレッド一覧を再取得（消えたことを反映）
+                if (store.currentCategoryId) {
+                    await loadThreads(store.currentCategoryId, true);
+                }
+            } catch (e) {
+                console.error("20件到達時のスレッド削除に失敗しました", e);
+            }
+
             clearThreadDetail();
             
             // GSAPによるインラインスタイルの変更をリセット
